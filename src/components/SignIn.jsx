@@ -1,0 +1,114 @@
+import React, { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { TextField, Button, Paper, Typography } from "@material-ui/core";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    padding: theme.spacing(3),
+    width: "300px",
+  },
+  textField: {
+    marginBottom: theme.spacing(2),
+  },
+  button: {
+    marginTop: theme.spacing(2),
+  },
+}));
+
+const SignIn = () => {
+  const classes = useStyles();
+  const [data, setData] = useState({ email: "", password: "" });
+  const [id, setID] = useState("");
+  const navigate = useNavigate();
+
+  function handleChange(e) {
+    setData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.value,
+    }));
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    console.log("Submit data: " + data.email + " " + data.password);
+    axios
+      .post("http://localhost:8000/api/user", data) // Adjust the API endpoint for sign-in
+      .then((res) => {
+        const { id, message } = res.data;
+        if (id) {
+          console.log("ID: " + id);
+          console.log("Sign-in success!");
+          navigate(`/user/${id}`);
+        } else {
+          console.log("Sign-in failed!");
+        }
+        // console.log(id);
+        // const userData = res.data;
+        // if (userData) {
+        //   console.log(data.email + " Sign-in Success!");
+        // console.log("User:" + userData.message);
+        //   navigate(`/user/${user}`);
+        // } else {
+        //   console.log("Sign-in failed!");
+        // }
+        // console.log(res.data.message);
+      })
+      .catch((err) => {
+        console.log("User is not exist!");
+        console.log(err.message);
+      });
+  }
+
+  return (
+    <div className={classes.root}>
+      <Paper elevation={3} className={classes.form}>
+        <form onSubmit={handleSubmit} className='form-container' noValidate>
+          <Typography variant='h5' gutterBottom>
+            Sign In
+          </Typography>
+          <TextField
+            className={classes.textField}
+            label='Email'
+            variant='outlined'
+            fullWidth
+            value={data.email}
+            onChange={handleChange}
+            name='email'
+          />
+          <TextField
+            className={classes.textField}
+            label='Password'
+            variant='outlined'
+            type='password'
+            fullWidth
+            value={data.password}
+            onChange={handleChange}
+            name='password'
+          />
+          <Button
+            className={classes.button}
+            variant='contained'
+            color='primary'
+            fullWidth
+            type='submit'
+          >
+            Sign In
+          </Button>
+        </form>
+      </Paper>
+    </div>
+  );
+};
+
+export default SignIn;
