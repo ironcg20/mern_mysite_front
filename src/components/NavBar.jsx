@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -13,19 +13,20 @@ const style = {
   flexGrow: 1,
 };
 const NavBar = ({ handleSignIn, handleSignUp }) => {
+  const { _id } = useParams();
   const [loggedIn, setLoggedIn] = useState(false);
-  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   const handleSignOut = () => {
     // Handle sign out logic here
     setLoggedIn(false);
-    setUserName("");
+    setUserEmail("");
   };
 
-  const handleLoginSuccess = (userName) => {
+  const handleLoginSuccess = (userEmail) => {
     // Handle successful login logic here, set the user name and login status
     setLoggedIn(true);
-    setUserName(userName);
+    setUserEmail(userEmail);
   };
   // const [user, setUser] = useState("");
 
@@ -62,9 +63,10 @@ const NavBar = ({ handleSignIn, handleSignUp }) => {
           <Typography variant='h6' style={style}>
             Mern Stack Todo List
           </Typography>
+          <p>{_id}</p>
           {loggedIn && (
-            <p name='userName' id='userName'>
-              {userName}
+            <p name='userEmail' id='userEmail'>
+              {userEmail}
             </p>
           )}
           {loggedIn ? (
