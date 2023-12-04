@@ -71,6 +71,8 @@ const SignIn = ({ handleLoginSuccess }) => {
       });
   }
 
+  const isSignInEnabled = data.email !== "" && data.password !== "";
+
   return (
     <div className={classes.root}>
       <Paper elevation={3} className={classes.form}>
@@ -103,6 +105,7 @@ const SignIn = ({ handleLoginSuccess }) => {
             color='primary'
             fullWidth
             type='submit'
+            disabled={!isSignInEnabled}
           >
             Sign In
           </Button>

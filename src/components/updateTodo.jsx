@@ -51,6 +51,12 @@ export default function UpdateTodo() {
     // console.log("Data: ", data.title, data.description, data.user);
   };
 
+  const todo = {
+    title: data.title,
+    description: data.description,
+    user: data.user,
+  };
+
   const handleSubmit = (e) => {
     const id = _id;
     e.preventDefault();
@@ -59,9 +65,9 @@ export default function UpdateTodo() {
     console.log(data.title, data.description, data.user);
     console.log("[/Submit]");
     axios
-      .put(`http://localhost:8000/api/todo/${id}`, data)
+      .put(`http://localhost:8000/api/todo/${id}`, todo)
       .then((res) => {
-        setData({ title: "", description: "" });
+        setData({ title: "", description: "", user: user });
         goBack();
       })
       .catch((err) => {

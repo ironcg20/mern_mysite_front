@@ -27,26 +27,31 @@ const NavBar = ({
   const disp = () => {
     console.log("This is: " + _id);
   };
-  useEffect(
-    () => {
-      // axios
-      //   .get("http://localhost:8000/api/todo", {
-      //     params: {
-      //       user: user,
-      //     },
-      //   })
-      //   .then((res) => {
-      //     console.log("User: " + user);
-      //     console.log("Intialize: " + res.data);
-      //     console.log("%s %s", res.data.title, res.data.description);
-      //     setTodo(res.data);
-      //   })
-      //   .catch((err) => {
-      //     console.log(err.message);
-      //   });
-    },
-    [_id], // updated
-  );
+  // useEffect(
+  //   () => {
+  //     axios
+  //       .get("http://localhost:8000/api/todo", {
+  //         params: {
+  //           user: user,
+  //         },
+  //       })
+  //       .then((res) => {
+  //         console.log("User: " + user);
+  //         console.log("Intialize: " + res.data);
+  //         console.log(
+  //           "%s %s",
+  //           res.data.title,
+  //           res.data.description,
+  //           res.data.user,
+  //         );
+  //         setTodo(res.data);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err.message);
+  //       });
+  //   },
+  //   [_id], // updated
+  // );
 
   // const handleSignIn = () => {
   //   setLoggedIn(true)
@@ -114,15 +119,33 @@ const NavBar = ({
           )}
           {loggedIn ? (
             <Link to={`/`}>
-              <Button onClick={handleSignOut}>Sign out</Button>
+              <Button
+                onClick={handleSignOut}
+                variant='contained'
+                color='primary'
+              >
+                Sign out
+              </Button>
             </Link>
           ) : (
             <>
               <Link to={`/signin/`}>
-                <Button onClick={handleSignIn}>Sign in</Button>
+                <Button
+                  onClick={handleSignIn}
+                  variant='contained'
+                  color='primary'
+                >
+                  Sign in
+                </Button>
               </Link>
               <Link to={`/signup/`}>
-                <Button onClick={handleSignUp}>Sign Up</Button>
+                <Button
+                  onClick={handleSignUp}
+                  variant='contained'
+                  color='primary'
+                >
+                  Sign Up
+                </Button>
               </Link>
             </>
           )}

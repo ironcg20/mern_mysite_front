@@ -8,10 +8,11 @@ import Button from "@material-ui/core/Button";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import TextField from "@material-ui/core/TextField";
 import { Container } from "@material-ui/core";
+import { v4 as uuidv4 } from "uuid";
 
 export default function CreateTodo() {
   const { user } = useParams();
-  const [data, setData] = useState({ title: "", description: "", user: "" });
+  const [data, setData] = useState({ title: "", description: "", user: user });
   const navigate = useNavigate();
 
   function handleChange(e) {
@@ -22,13 +23,14 @@ export default function CreateTodo() {
     e.preventDefault();
 
     const todo = {
+      _id: uuidv4(),
       title: data.title,
       description: data.description,
-      user: user,
+      user: data.user,
     };
 
     axios
-      .post("http://localhost:8000/api/todo", todo)
+      .post("http://localhost:8000/api/todo/", todo)
       .then((res) => {
         setData({ title: "", description: "", user: user });
         goBack();

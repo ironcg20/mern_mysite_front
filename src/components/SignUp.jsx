@@ -58,7 +58,8 @@ const SignUp = () => {
       .post("http://localhost:8000/api/user/create", data)
       .then((res) => {
         setData({ email: "", password: "" });
-        navigate("/");
+        const id = res.data.id;
+        navigate(`/user/${id}`);
         console.log(res.data.message);
       })
       .catch((err) => {
@@ -66,6 +67,8 @@ const SignUp = () => {
         console.log(err.message);
       });
   }
+
+  const isSignUpEnabled = data.email !== "" && data.password !== "";
 
   return (
     <div className={classes.root}>
@@ -99,6 +102,7 @@ const SignUp = () => {
             color='primary'
             fullWidth
             type='submit'
+            disabled={!isSignUpEnabled}
           >
             Sign Up
           </Button>
