@@ -21,14 +21,14 @@ import { Container } from "@material-ui/core";
 function TodoCard({ data, handleEdit, handleDelete }) {
   // updated
   // console.log("Table data: ", data);
-  const { _id, title, description } = data;
+  const { _id, title, description, user } = data;
   return (
     <TableRow key={_id}>
       <TableCell>{title}</TableCell>
       <TableCell>{description}</TableCell>
 
       <Link
-        to={`/update-todo/edit?_id=${_id}&title=${title}&description=${description}`}
+        to={`/update-todo/edit?_id=${_id}&title=${title}&description=${description}&user=${user}`}
       >
         <Button name={_id} onClick={handleEdit}>
           <CreateIcon></CreateIcon>
