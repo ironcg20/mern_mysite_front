@@ -7,6 +7,10 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import SignIn from "./SignIn";
+import Drawer from "@material-ui/core/Drawer";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import { Container } from "@material-ui/core";
 // import SignUp from "./SignUp";
 // import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -23,6 +27,17 @@ const NavBar = ({
   const { _id } = useParams();
   // const [loggedIn, setLoggedIn] = useState(false);
   // const [userEmail, setUserEmail] = useState("");
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setDrawerOpen(open);
+  };
 
   const disp = () => {
     console.log("This is: " + _id);
@@ -103,9 +118,16 @@ const NavBar = ({
     <div>
       <AppBar position='static'>
         <Toolbar>
-          <IconButton edge='start' color='inherit' aria-label='Menu'>
+          <IconButton
+            edge='start'
+            color='inherit'
+            aria-label='Menu'
+            onClick={toggleDrawer(true)}
+          >
             <MenuIcon />
           </IconButton>
+
+          {/* <MenuIcon /> */}
           {/* <Link to={`/`}> */}
           <Typography variant='h6' style={style}>
             Mern Stack Todo List
@@ -151,6 +173,19 @@ const NavBar = ({
           )}
         </Toolbar>
       </AppBar>
+      <Drawer anchor='left' open={drawerOpen} onClose={toggleDrawer(false)}>
+        <Co>
+          <Typography>User Name</Typography>
+          <List>
+            <ListItem button onClick={toggleDrawer(false)}>
+              <Typography>Drawer Item 1</Typography>
+            </ListItem>
+            <ListItem button onClick={toggleDrawer(false)}>
+              <Typography>Drawer Item 2</Typography>
+            </ListItem>
+          </List>
+        </Co>
+      </Drawer>
     </div>
   );
 };

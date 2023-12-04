@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { TextField, Button, Paper, Typography } from "@material-ui/core";
+import { TextField, Button, Paper, Typography, Box } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { GoogleLogin } from "react-google-login";
+import { googleLogout, useGoogleLogin } from "@react-oauth/google";
+import "../index.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,10 +33,14 @@ const SignIn = ({ handleLoginSuccess }) => {
   const [data, setData] = useState({ email: "", password: "" });
   const [id, setID] = useState("");
   const navigate = useNavigate();
-
   // const { _id } = useParams();
   // const [loggedIn, setLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+
+  const responseGoogle = (response) => {
+    console.log(response); // Handle the response from Google
+    // Here, you would typically send the received token to your backend for authentication
+  };
 
   function handleChange(e) {
     setData((prevData) => ({
@@ -109,6 +116,16 @@ const SignIn = ({ handleLoginSuccess }) => {
           >
             Sign In
           </Button>
+          <div class='m-top'>
+            <GoogleLogin
+              clientId='YOUR_CLIENT_ID' // Replace with your Google OAuth client ID
+              buttonText='Login with Google'
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle} // Handle failure if needed
+              cookiePolicy={"single_host_origin"}
+              className='full-width-google-button' // Assign a class for full width
+            />
+          </div>
         </form>
       </Paper>
     </div>

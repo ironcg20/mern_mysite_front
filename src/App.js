@@ -71,11 +71,35 @@ import NavBar from "./components/NavBar";
 import Home from "./components/Home";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  AppBar,
+  Toolbar,
+  Typography,
+  CssBaseline,
+} from "@mui/material";
 
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   // const navigate = useNavigate();
+  // Drawer ---------------------------
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setDrawerOpen(open);
+  };
+
+  // Login & SignUp ---------------------
 
   const handleLoginSuccess = (email) => {
     // Update state or perform actions upon successful login
