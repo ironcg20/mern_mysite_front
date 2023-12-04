@@ -14,31 +14,101 @@ import CreateIcon from "@material-ui/icons/Create";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
 
 import NavBar from "./NavBar";
 import { Container } from "@material-ui/core";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  DialogActions,
+} from "@material-ui/core";
 
 function TodoCard({ data, handleEdit, handleDelete }) {
   // updated
   // console.log("Table data: ", data);
   const { _id, title, description, user } = data;
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleDeleteClick = () => {
+    setOpenDialog(true); // Open the dialog when the delete button is clicked
+  };
+
+  const handleConfirmDelete = (e) => {
+    // handleDelete(_id); // Call the handleDelete function with the ID
+    handleDelete(e);
+    setOpenDialog(false); // Close the dialog after confirming delete
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false); // Close the dialog if cancel is clicked
+  };
   return (
-    <TableRow key={_id}>
-      <TableCell>{title}</TableCell>
-      <TableCell>{description}</TableCell>
+    // <TableRow key={_id}>
+    //   <TableCell>{title}</TableCell>
+    //   <TableCell>{description}</TableCell>
 
-      <Link
-        to={`/update-todo/edit?_id=${_id}&title=${title}&description=${description}&user=${user}`}
+    //   <Link
+    //     to={`/update-todo/edit?_id=${_id}&title=${title}&description=${description}&user=${user}`}
+    //   >
+    //     <Button name={_id} onClick={handleEdit}>
+    //       <CreateIcon></CreateIcon>
+    //     </Button>
+    //   </Link>
+
+    //   <Button name={_id} onClick={handleDelete}>
+    //     <DeleteIcon></DeleteIcon>
+    //   </Button>
+    // </TableRow>
+
+    <>
+      <TableRow key={_id}>
+        <TableCell>{title}</TableCell>
+        <TableCell>{description}</TableCell>
+        <Link
+          to={`/update-todo/edit?_id=${_id}&title=${title}&description=${description}&user=${user}`}
+        >
+          <IconButton onClick={handleEdit} aria-label='edit'>
+            <CreateIcon />
+          </IconButton>
+        </Link>
+        <IconButton name={_id} onClick={handleDeleteClick}>
+          <DeleteIcon></DeleteIcon>
+        </IconButton>
+      </TableRow>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
       >
-        <Button name={_id} onClick={handleEdit}>
-          <CreateIcon></CreateIcon>
-        </Button>
-      </Link>
-
-      <Button name={_id} onClick={handleDelete}>
-        <DeleteIcon></DeleteIcon>
-      </Button>
-    </TableRow>
+        <DialogTitle id='alert-dialog-title'>{"Confirm Delete"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            Are you sure you want to delete this item?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseDialog}
+            color='primary'
+            variant='contained'
+          >
+            Cancel
+          </Button>
+          <Button
+            name={_id}
+            onClick={handleConfirmDelete}
+            color='primary'
+            autoFocus
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
 

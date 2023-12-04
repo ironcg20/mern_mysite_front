@@ -11,6 +11,10 @@ import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import { Container } from "@material-ui/core";
+import PersonIcon from "@material-ui/icons/Person";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material"; // Optional: For resetting default styles
+
 // import SignUp from "./SignUp";
 // import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -42,6 +46,7 @@ const NavBar = ({
   const disp = () => {
     console.log("This is: " + _id);
   };
+
   // useEffect(
   //   () => {
   //     axios
@@ -116,28 +121,52 @@ const NavBar = ({
   // );
   return (
     <div>
-      <AppBar position='static'>
-        <Toolbar>
+      <AppBar position='fixed'>
+        <Toolbar
+          style={{
+            background: "white",
+          }}
+        >
           <IconButton
             edge='start'
             color='inherit'
             aria-label='Menu'
             onClick={toggleDrawer(true)}
+            style={{
+              color: "#3f51b5",
+            }}
           >
             <MenuIcon />
           </IconButton>
 
-          {/* <MenuIcon /> */}
-          {/* <Link to={`/`}> */}
-          <Typography variant='h6' style={style}>
-            Mern Stack Todo List
+          <Typography
+            variant='h6'
+            component={Link}
+            to='/'
+            style={{
+              // background: 'white',
+              color: "#3f51b5",
+              textDecoration: "none",
+              flexGrow: 1,
+            }}
+          >
+            Haruto
           </Typography>
-          {/* </Link> */}
 
           {loggedIn && (
-            <p name='userEmail' id='userEmail'>
+            <Typography
+              name='userEmail'
+              id='userEmail'
+              style={{
+                display: "flex",
+                alignItems: "center",
+                margin: "0 2rem",
+                color: "#3f51b5",
+              }}
+            >
+              <PersonIcon style={{ marginRight: "0.5rem" }} />
               {userEmail}
-            </p>
+            </Typography>
           )}
           {loggedIn ? (
             <Link to={`/`}>
@@ -154,8 +183,10 @@ const NavBar = ({
               <Link to={`/signin/`}>
                 <Button
                   onClick={handleSignIn}
-                  variant='contained'
                   color='primary'
+                  style={{
+                    margin: "0 0.5rem",
+                  }}
                 >
                   Sign in
                 </Button>
@@ -165,6 +196,10 @@ const NavBar = ({
                   onClick={handleSignUp}
                   variant='contained'
                   color='primary'
+                  // style={{
+                  //   background: "#333e79",
+                  //   // color: "#3f51b5", // Primary color
+                  // }}
                 >
                   Sign Up
                 </Button>
@@ -173,18 +208,21 @@ const NavBar = ({
           )}
         </Toolbar>
       </AppBar>
-      <Drawer anchor='left' open={drawerOpen} onClose={toggleDrawer(false)}>
-        <Co>
-          <Typography>User Name</Typography>
-          <List>
-            <ListItem button onClick={toggleDrawer(false)}>
-              <Typography>Drawer Item 1</Typography>
-            </ListItem>
-            <ListItem button onClick={toggleDrawer(false)}>
-              <Typography>Drawer Item 2</Typography>
-            </ListItem>
-          </List>
-        </Co>
+      <Drawer
+        anchor='left'
+        open={drawerOpen}
+        onClose={toggleDrawer(false)}
+        style={{ padding: "rem" }}
+      >
+        <Typography>User Name</Typography>
+        <List>
+          <ListItem button onClick={toggleDrawer(false)}>
+            <Typography>Drawer Item 1</Typography>
+          </ListItem>
+          <ListItem button onClick={toggleDrawer(false)}>
+            <Typography>Drawer Item 2</Typography>
+          </ListItem>
+        </List>
       </Drawer>
     </div>
   );

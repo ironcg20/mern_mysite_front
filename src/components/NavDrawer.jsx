@@ -47,6 +47,7 @@ const NavDrawer = () => {
         classes={{
           paper: classes.drawerPaper,
         }}
+        // style={{ padding: "1rem" }}
       >
         <Toolbar />
         <List>

@@ -6,6 +6,10 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { Container } from "@material-ui/core";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,10 +35,16 @@ const useStyles = makeStyles((theme) => ({
 const SignUp = () => {
   const classes = useStyles();
   const [data, setData] = useState({ email: "", password: "" });
+  const [error, setError] = useState({ email: "", password: "" }); // New state for error messages
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword); // Toggle password visibility
+  };
 
   function handleChange(e) {
     setData((data) => ({ ...data, [e.target.name]: e.target.value }));
+    setError({ ...error, [e.target.name]: "" }); // Clear error message on input change
   }
 
   function handleSubmit(e) {
@@ -45,20 +55,37 @@ const SignUp = () => {
       password: data.password,
     };
 
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(data.email)) {
+      setError({ ...error, email: "Invalid email address" }); // Set error message for email validation failure
+      return;
+    }
+
+    // Password validation: Minimum 8 characters, at least one letter, one number, and one special character
+    // const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+    // if (!passwordPattern.test(data.password)) {
+    //   setError({
+    //     ...error,
+    //     password: "Password must be at least 8 characters long and contain one letter, one number, and one special character",
+    //   }); // Set error message for password validation failure
+    //   return;
+    // }
+
     console.log(
-      "Sing Up - [Submit data]\n" +
+      "Sign Up - [Submit data]\n" +
         "Email: " +
         data.email +
         " Password: " +
         data.password,
     );
 
-    // console.log({ user });
     axios
       .post("http://localhost:8000/api/user/create", data)
       .then((res) => {
         setData({ email: "", password: "" });
-        const id = res.data.id;
+        setError({ email: "", password: "" }); // Clear error messages on successful submission
+        const id = res.data._id;
         navigate(`/user/${id}`);
         console.log(res.data.message);
       })
@@ -85,17 +112,39 @@ const SignUp = () => {
             value={data.email}
             onChange={handleChange}
             name='email'
+            error={!!error.email} // Set error state for TextField
+            helperText={error.email} // Display error message if present
           />
           <TextField
             className={classes.textField}
             label='Password'
             variant='outlined'
-            type='password'
+            type={showPassword ? "text" : "password"} // Show/hide password based on state
             fullWidth
             value={data.password}
             onChange={handleChange}
             name='password'
+            error={!!error.password}
+            helperText={error.password}
+            InputProps={{
+              // Add InputProps to include the show/hide icon
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <IconButton
+                    aria-label='toggle password visibility'
+                    onClick={togglePasswordVisibility}
+                    onMouseDown={(e) => e.preventDefault()}
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
+          <Typography variant='body2' color='error'>
+            {/* Display fail text above the signup button with red color */}
+            {error.email || error.password}
+          </Typography>
           <Button
             className={classes.button}
             variant='contained'
