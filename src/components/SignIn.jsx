@@ -25,11 +25,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SignIn = () => {
+const SignIn = ({ handleLoginSuccess }) => {
   const classes = useStyles();
   const [data, setData] = useState({ email: "", password: "" });
   const [id, setID] = useState("");
   const navigate = useNavigate();
+
+  // const { _id } = useParams();
+  // const [loggedIn, setLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
 
   function handleChange(e) {
     setData((prevData) => ({
@@ -41,28 +45,25 @@ const SignIn = () => {
   function handleSubmit(e) {
     e.preventDefault();
 
-    console.log("Submit data: " + data.email + " " + data.password);
+    console.log(
+      "[Submit data]\n" +
+        "Email: " +
+        data.email +
+        " Password: " +
+        data.password,
+    );
     axios
       .post("http://localhost:8000/api/user", data) // Adjust the API endpoint for sign-in
       .then((res) => {
         const { id, message } = res.data;
         if (id) {
-          console.log("ID: " + id);
+          console.log("[Received Data]\n" + "ID: " + id);
           console.log("Sign-in success!");
+          handleLoginSuccess(data.email);
           navigate(`/user/${id}`);
         } else {
           console.log("Sign-in failed!");
         }
-        // console.log(id);
-        // const userData = res.data;
-        // if (userData) {
-        //   console.log(data.email + " Sign-in Success!");
-        // console.log("User:" + userData.message);
-        //   navigate(`/user/${user}`);
-        // } else {
-        //   console.log("Sign-in failed!");
-        // }
-        // console.log(res.data.message);
       })
       .catch((err) => {
         console.log("User is not exist!");

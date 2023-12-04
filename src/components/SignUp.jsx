@@ -30,15 +30,8 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp = () => {
   const classes = useStyles();
-  //   const [email, setEmail] = useState("");
-  //   const [password, setPassword] = useState("");
   const [data, setData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
-
-  //   const handleSignUp = () => {
-  //     // Implement your signup logic here
-  //     console.log(`Email: ${email}, Password: ${password}`);
-  //   };
 
   function handleChange(e) {
     setData((data) => ({ ...data, [e.target.name]: e.target.value }));
@@ -52,9 +45,17 @@ const SignUp = () => {
       password: data.password,
     };
 
-    console.log({ user });
+    console.log(
+      "Sing Up - [Submit data]\n" +
+        "Email: " +
+        data.email +
+        " Password: " +
+        data.password,
+    );
+
+    // console.log({ user });
     axios
-      .post("http://localhost:8000/api/user", user)
+      .post("http://localhost:8000/api/user/create", data)
       .then((res) => {
         setData({ email: "", password: "" });
         navigate("/");

@@ -11,21 +11,26 @@ import Button from "@material-ui/core/Button";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 export default function UpdateTodo() {
-  const { _id } = useParams();
-  const [data, setData] = useState({ title: "", description: "" });
+  const { _id, title, description } = useParams();
+  // const { _id } = useParams();
+  const [data, setData] = useState({
+    title: title,
+    description: description,
+  });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost:8000/api/todo/${_id}`)
-      .then((res) => {
-        console.log("_id: " + _id);
-        setData(res.data);
-      })
-      .catch((err) => {
-        console.error("Loading error");
-      });
-  }, [_id]);
+  // useEffect(() => {
+  //   axios
+  //     .get(`http://localhost:8000/api/todo/${_id}`)
+  //     .then((res) => {
+  //       console.log("_id: " + _id);
+  //       setData(res.data);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Loading error");
+  //     });
+  // }, [_id]);
+
   const handleChange = (e) => {
     console.log("Name: " + e.target.name);
     const { name, value } = e.target;

@@ -6,23 +6,16 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import SignIn from "./SignIn";
 // import SignUp from "./SignUp";
 // import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const style = {
   flexGrow: 1,
 };
-const NavBar = ({
-  handleSignIn,
-  handleSignUp,
-  loggedIn,
-  handleSignOut,
-  userEmail,
-}) => {
+const NavBar = ({ handleSignIn, handleSignUp }) => {
   const { _id } = useParams();
-  // const [loggedIn, setLoggedIn] = useState(false);
-  // const [userEmail, setUserEmail] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
 
   const disp = () => {
     console.log("This is: " + _id);
@@ -47,28 +40,17 @@ const NavBar = ({
     },
     [_id], // updated
   );
+  const handleSignOut = () => {
+    // Handle sign out logic here
+    setLoggedIn(false);
+    setUserEmail("");
+  };
 
-  // const handleSignIn = () => {
-  //   setLoggedIn(true)
-  // };
-  // const handleSignOut = () => {
-  //   // Handle sign out logic here
-  //   setLoggedIn(false);
-  //   setUserEmail("");
-  // };
-
-  // const handleSignIn = () => {
-  //   // Handle sign out logic here
-  //   setLoggedIn(true);
-  //   setUserEmail("");
-  // };
-
-  // const handleLoginSuccess = (userEmail) => {
-  //   // Handle successful login logic here, set the user name and login status
-  //   console.log("Navvar Loginstate: " + loggedIn);
-  //   setLoggedIn(true);
-  //   setUserEmail(userEmail);
-  // };
+  const handleLoginSuccess = (userEmail) => {
+    // Handle successful login logic here, set the user name and login status
+    setLoggedIn(true);
+    setUserEmail(userEmail);
+  };
   // const [user, setUser] = useState("");
 
   // return (
@@ -107,15 +89,14 @@ const NavBar = ({
           </Typography>
           {/* </Link> */}
 
+          <p>{disp}</p>
           {loggedIn && (
             <p name='userEmail' id='userEmail'>
               {userEmail}
             </p>
           )}
           {loggedIn ? (
-            <Link to={`/`}>
-              <Button onClick={handleSignOut}>Sign out</Button>
-            </Link>
+            <Button onClick={handleSignOut}>Sign out</Button>
           ) : (
             <>
               <Link to={`/signin/`}>

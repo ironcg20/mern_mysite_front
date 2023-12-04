@@ -20,14 +20,16 @@ import { Container } from "@material-ui/core";
 
 function TodoCard({ data, handleEdit, handleDelete }) {
   // updated
-  console.log("Table data: ", data);
+  // console.log("Table data: ", data);
   const { _id, title, description } = data;
   return (
     <TableRow key={_id}>
       <TableCell>{title}</TableCell>
       <TableCell>{description}</TableCell>
 
-      <Link to={`/update-todo/${_id}`}>
+      <Link
+        to={`/update-todo/edit?_id=${_id}&title=${title}&description=${description}`}
+      >
         <Button name={_id} onClick={handleEdit}>
           <CreateIcon></CreateIcon>
         </Button>
@@ -56,9 +58,9 @@ export default function ShowTodoList() {
           },
         })
         .then((res) => {
-          console.log("User: " + user);
-          console.log("Intialize: " + res.data);
-          console.log("%s %s", res.data.title, res.data.description);
+          // console.log("User: " + user);
+          // console.log("Intialize: " + res.data);
+          // console.log("%s %s", res.data.title, res.data.description);
           setTodo(res.data);
         })
         .catch((err) => {
@@ -72,7 +74,7 @@ export default function ShowTodoList() {
     const id = e.currentTarget.name;
     // setId(id);
     setId(e.currentTarget.name);
-    console.log("Id of handleEdit" + this.id);
+    // console.log("Id of handleEdit" + this.id);
   };
 
   const handleUpdate = () => {
