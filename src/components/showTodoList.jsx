@@ -15,8 +15,10 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-
+import Fab from "@mui/material/Fab";
 import NavBar from "./NavBar";
+import AddIcon from "@mui/icons-material/Add";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Container } from "@material-ui/core";
 import {
   Dialog,
@@ -67,17 +69,29 @@ function TodoCard({ data, handleEdit, handleDelete }) {
       <TableRow key={_id}>
         <TableCell>{title}</TableCell>
         <TableCell>{description}</TableCell>
-        <Link
-          to={`/update-todo/edit?_id=${_id}&title=${title}&description=${description}&user=${user}`}
-        >
-          <IconButton onClick={handleEdit} aria-label='edit'>
-            <CreateIcon />
+        <TableCell>
+          <Link
+            to={`/update-todo/edit?_id=${_id}&title=${title}&description=${description}&user=${user}`}
+          >
+            <IconButton
+              onClick={handleEdit}
+              aria-label='edit'
+              style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)" }}
+            >
+              <CreateIcon />
+            </IconButton>
+          </Link>
+          {/* <div style={{ marginRight: "0.5rem" }}></div> */}
+          <IconButton
+            name={_id}
+            onClick={handleDeleteClick}
+            style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)" }}
+          >
+            <DeleteIcon></DeleteIcon>
           </IconButton>
-        </Link>
-        <IconButton name={_id} onClick={handleDeleteClick}>
-          <DeleteIcon></DeleteIcon>
-        </IconButton>
+        </TableCell>
       </TableRow>
+
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
@@ -101,7 +115,8 @@ function TodoCard({ data, handleEdit, handleDelete }) {
           <Button
             name={_id}
             onClick={handleConfirmDelete}
-            color='primary'
+            color='secondary'
+            variant='contained'
             autoFocus
           >
             Confirm
@@ -169,19 +184,44 @@ export default function ShowTodoList() {
   return (
     <>
       {/* <NavBar /> */}
-      <Container className='container' style={{ padding: "20px" }}>
+      <Container
+        className='container'
+        style={{ padding: "20px", height: "900px" }}
+      >
         <Link to={`/create-todo/${user}`} className='button-new'>
-          <Button variant='contained' color='primary'>
+          {/* <Button color='primary' variant='contained'>
             Add Data
-          </Button>
+          </Button> */}
+          {/* <Button
+            variant='contained'
+            color='primary'
+            style={{
+              borderRadius: "100%",
+              // width: "50px",
+              // height: "50px",
+              padding: "0.5rem",
+            }}
+          >
+            +
+          </Button> */}
+          <Fab color='primary' aria-label='add'>
+            <AddIcon />
+          </Fab>
         </Link>
         <section className='contents'>
           <h1>TODO List</h1>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Title</TableCell>
-                <TableCell>Description</TableCell>
+                <TableCell>
+                  <h3>Title</h3>
+                </TableCell>
+                <TableCell>
+                  <h3>Description</h3>
+                </TableCell>
+                <TableCell>
+                  <h3>Operations</h3>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableHead></TableHead>

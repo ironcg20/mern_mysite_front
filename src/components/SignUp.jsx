@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SignUp = () => {
+const SignUp = ({ handleLoginSuccess }) => {
   const classes = useStyles();
   const [data, setData] = useState({ email: "", password: "" });
   const [error, setError] = useState({ email: "", password: "" }); // New state for error messages
@@ -54,7 +54,6 @@ const SignUp = () => {
       email: data.email,
       password: data.password,
     };
-
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(data.email)) {
@@ -85,9 +84,29 @@ const SignUp = () => {
       .then((res) => {
         setData({ email: "", password: "" });
         setError({ email: "", password: "" }); // Clear error messages on successful submission
-        const id = res.data._id;
-        navigate(`/user/${id}`);
-        console.log(res.data.message);
+
+        axios
+          .post("http://localhost:8000/api/user", data) // Adjust the API endpoint for sign-in
+          .then((res) => {
+            const { id, message } = res.data;
+            if (id) {
+              console.log("[Received Data]\n" + "ID: " + id);
+              console.log("Sign-in success!");
+              handleLoginSuccess(data.email);
+              navigate(`/user/${id}`);
+            } else {
+              console.log("Sign-in failed!");
+            }
+          })
+          .catch((err) => {
+            console.log("User is not exist!");
+            console.log(err.message);
+          });
+
+        // const id = res.data._id;
+        // console.log("ID: ", id);
+        // console.log(res.data.message);
+        // navigate(`/user/${id}`);
       })
       .catch((err) => {
         console.log("Error couldn't create USER");

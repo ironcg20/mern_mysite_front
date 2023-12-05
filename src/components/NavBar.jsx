@@ -14,6 +14,7 @@ import { Container } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material"; // Optional: For resetting default styles
+import { Tabs, Tab, Box } from "@mui/material";
 
 // import SignUp from "./SignUp";
 // import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -21,6 +22,24 @@ import { CssBaseline } from "@mui/material"; // Optional: For resetting default 
 const style = {
   flexGrow: 1,
 };
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <Typography
+      component='div'
+      role='tabpanel'
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box p={3}>{children}</Box>}
+    </Typography>
+  );
+}
+
 const NavBar = ({
   handleSignIn,
   handleSignUp,
@@ -29,10 +48,15 @@ const NavBar = ({
   userEmail,
 }) => {
   const { _id } = useParams();
+  const [value, setValue] = useState(0);
   // const [loggedIn, setLoggedIn] = useState(false);
   // const [userEmail, setUserEmail] = useState("");
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === "keydown" &&
@@ -150,9 +174,31 @@ const NavBar = ({
               flexGrow: 1,
             }}
           >
-            Haruto
+            DRAGER
           </Typography>
-
+          <div>
+            {/* <p>ddd</p> */}
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label='basic tabs example'
+            >
+              <Tab label='Products' style={{ color: "black" }} />
+              <Tab label='About Us' />
+              <Tab label='Our Services' />
+              <Tab label='Contact Us' />
+            </Tabs>
+            {/* <TabPanel value={value} index={0}>
+              Content for Tab 1
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              Content for Tab 2
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              Content for Tab 3
+            </TabPanel> */}
+          </div>
+          <div></div>
           {loggedIn && (
             <Typography
               name='userEmail'
@@ -179,7 +225,9 @@ const NavBar = ({
               </Button>
             </Link>
           ) : (
-            <>
+            <div
+            // style={{ width: "300px", display: "flex", justifyContent: "end" }}
+            >
               <Link to={`/signin/`}>
                 <Button
                   onClick={handleSignIn}
@@ -204,7 +252,7 @@ const NavBar = ({
                   Sign Up
                 </Button>
               </Link>
-            </>
+            </div>
           )}
         </Toolbar>
       </AppBar>

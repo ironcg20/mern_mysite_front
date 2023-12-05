@@ -9,6 +9,7 @@ import { Container } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import Fab from "@mui/material/Fab";
 
 export default function UpdateTodo() {
   // const { _id, title, description } = useParams();
@@ -83,11 +84,16 @@ export default function UpdateTodo() {
   return (
     <>
       {/* {)} */}
-      <Container style={{ padding: "20px" }}>
-        <Button variant='contained' color='primary' onClick={goBack}>
+      <Container style={{ padding: "20px", height: "900px" }}>
+        <Fab
+          color='secondary'
+          aria-label='go-back'
+          variant='contained'
+          // color='primary'
+          onClick={goBack}
+        >
           <ArrowBackIcon />
-          Back
-        </Button>
+        </Fab>
         <form
           className='form-container'
           onSubmit={handleSubmit}

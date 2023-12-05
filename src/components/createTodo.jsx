@@ -8,6 +8,8 @@ import Button from "@material-ui/core/Button";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import TextField from "@material-ui/core/TextField";
 import { Container } from "@material-ui/core";
+import Fab from "@mui/material/Fab";
+
 import { v4 as uuidv4 } from "uuid";
 
 export default function CreateTodo() {
@@ -47,12 +49,22 @@ export default function CreateTodo() {
 
   return (
     <>
-      <Container className='container' style={{ padding: "20px" }}>
-        <Button variant='contained' color='primary' onClick={goBack}>
+      <Container
+        className='container'
+        style={{ padding: "20px", height: "900px" }}
+      >
+        <Fab
+          color='secondary'
+          aria-label='go-back'
+          variant='contained'
+          // color='primary'
+          onClick={goBack}
+        >
           <ArrowBackIcon />
-          Back
-        </Button>
-        <section className='contents' style={{ paddingTop: "30px" }}>
+        </Fab>
+
+        <section className='contents'>
+          <h1>Add List</h1>
           <form onSubmit={handleSubmit} className='form-container' noValidate>
             <TextField
               type='text'
@@ -62,8 +74,9 @@ export default function CreateTodo() {
               placeholder='Title'
               fullWidth
               className='input'
-              style={{ height: "80px" }}
+              style={{ height: "80px", width: "30%" }}
             />
+            <br></br>
             <TextField
               type='text'
               name='description'
@@ -72,8 +85,9 @@ export default function CreateTodo() {
               placeholder='Description'
               fullWidth
               className='input'
-              style={{ height: "80px" }}
+              style={{ height: "80px", width: "30%" }}
             />
+            <br></br>
             <Button
               type='submit'
               variant='contained'

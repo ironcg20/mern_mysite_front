@@ -71,6 +71,7 @@ import NavBar from "./components/NavBar";
 import Home from "./components/Home";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
+import Footer from "./components/Footer";
 import NotFoundPage from "./components/NotFoundPage";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material"; // Optional: For resetting default styles
@@ -175,17 +176,16 @@ const App = () => {
               handleSignOut={handleSignOut}
             />
           }
+          <div style={{ marginTop: "4rem" }}></div>
           <Routes>
             <Route exact path='/' element={<Home />} />
-            <Route path='/user/:user' element={<ShowTodoList />} />
+            <Route
+              path='/user/:user'
+              element={<ShowTodoList />}
+            />
             <Route
               path='/signup'
-              element={
-                <SignUp
-                  handleLoginSuccess={handleLoginSuccess}
-                  // handleLoginSuccess_navbar={handleLoginSuccess}
-                />
-              }
+              element={<SignUp handleLoginSuccess={handleLoginSuccess} />}
             />
             <Route
               path='/signin'
@@ -195,6 +195,7 @@ const App = () => {
             <Route path='/update-todo/:_id' element={<UpdateTodo />} />
             <Route path='*' element={<NotFoundPage />} />
           </Routes>
+          <Footer />
         </Router>
       </div>
     </ThemeProvider>
