@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { GoogleLogin } from "react-google-login";
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
+import { handleLogIn } from "../features/user/userSlice"; // Import actions from slice
+import { useDispatch, useSelector } from "react-redux";
 import "../index.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -31,16 +33,8 @@ const useStyles = makeStyles((theme) => ({
 const SignIn = ({ handleLoginSuccess }) => {
   const classes = useStyles();
   const [data, setData] = useState({ email: "", password: "" });
-  const [id, setID] = useState("");
+  const dispatch = useDispatch(); // Getting dispatch function
   const navigate = useNavigate();
-  // const { _id } = useParams();
-  // const [loggedIn, setLoggedIn] = useState(false);
-  const [userEmail, setUserEmail] = useState("");
-
-  const responseGoogle = (response) => {
-    console.log(response); // Handle the response from Google
-    // Here, you would typically send the received token to your backend for authentication
-  };
 
   function handleChange(e) {
     setData((prevData) => ({
@@ -49,36 +43,42 @@ const SignIn = ({ handleLoginSuccess }) => {
     }));
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  // function handleSubmit(e) {
+  //   e.preventDefault();
 
-    console.log(
-      "[Submit data]\n" +
-        "Email: " +
-        data.email +
-        " Password: " +
-        data.password,
-    );
-    axios
-      .post("http://localhost:8000/api/user", data) // Adjust the API endpoint for sign-in
-      .then((res) => {
-        const { id, message } = res.data;
-        if (id) {
-          console.log("[Received Data]\n" + "ID: " + id);
-          console.log("Sign-in success!");
-          handleLoginSuccess(data.email);
-          navigate(`/user/${id}`);
-        } else {
-          console.log("Sign-in failed!");
-        }
-      })
-      .catch((err) => {
-        console.log("User is not exist!");
-        console.log(err.message);
-      });
-  }
+  //   console.log(
+  //     "[Submit data]\n" +
+  //       "Email: " +
+  //       data.email +
+  //       " Password: " +
+  //       data.password,
+  //   );
+  //   axios
+  //     .post("http://localhost:8000/api/user", data) // Adjust the API endpoint for sign-in
+  //     .then((res) => {
+  //       const { id, message } = res.data;
+  //       if (id) {
+  //         console.log("[Received Data]\n" + "ID: " + id);
+  //         console.log("Sign-in success!");
+  //         handleLoginSuccess(data.email);
+  //         navigate(`/user/${id}`);
+  //       } else {
+  //         console.log("Sign-in failed!");
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log("User is not exist!");
+  //       console.log(err.message);
+  //     });
+  // }
 
   const isSignInEnabled = data.email !== "" && data.password !== "";
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent default form submission
+    dispatch(handleLogIn({ email: data.email, password: data.password }));
+    navigate("/todoView");
+  };
 
   return (
     <div className={classes.root}>
@@ -116,7 +116,7 @@ const SignIn = ({ handleLoginSuccess }) => {
           >
             Sign In
           </Button>
-          <div class='m-top'>
+          {/* <div class='m-top'>
             <GoogleLogin
               clientId='YOUR_CLIENT_ID' // Replace with your Google OAuth client ID
               buttonText='Login with Google'
@@ -125,7 +125,7 @@ const SignIn = ({ handleLoginSuccess }) => {
               cookiePolicy={"single_host_origin"}
               className='full-width-google-button' // Assign a class for full width
             />
-          </div>
+          </div> */}
         </form>
       </Paper>
     </div>

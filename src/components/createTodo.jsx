@@ -9,12 +9,18 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import TextField from "@material-ui/core/TextField";
 import { Container } from "@material-ui/core";
 import Fab from "@mui/material/Fab";
+import { useDispatch, useSelector } from "react-redux";
 
 import { v4 as uuidv4 } from "uuid";
 
-export default function CreateTodo() {
-  const { user } = useParams();
-  const [data, setData] = useState({ title: "", description: "", user: user });
+const CreateTodo = () => {
+  const _user = useSelector((state) => state.user);
+  // const { user } = _user._id;
+  const [data, setData] = useState({
+    title: "",
+    description: "",
+    user: _user._id,
+  });
   const navigate = useNavigate();
 
   function handleChange(e) {
@@ -28,13 +34,15 @@ export default function CreateTodo() {
       _id: uuidv4(),
       title: data.title,
       description: data.description,
-      user: data.user,
+      user: _user._id,
     };
+
+    console.log(todo._id, todo.title, todo.description, todo.user);
 
     axios
       .post("http://localhost:8000/api/todo/", todo)
       .then((res) => {
-        setData({ title: "", description: "", user: user });
+        setData({ title: "", description: "", user: _user._id });
         goBack();
       })
       .catch((err) => {
@@ -47,8 +55,11 @@ export default function CreateTodo() {
     navigate(-1);
   };
 
+  const isTitleNotEmpty = data.title.trim() !== "";
+
   return (
     <>
+      <p>{data._id}</p>
       <Container
         className='container'
         style={{ padding: "20px", height: "900px" }}
@@ -93,6 +104,7 @@ export default function CreateTodo() {
               variant='contained'
               color='primary'
               className='button'
+              disabled={!isTitleNotEmpty}
             >
               Create
             </Button>
@@ -101,4 +113,6 @@ export default function CreateTodo() {
       </Container>
     </>
   );
-}
+};
+
+export default CreateTodo;

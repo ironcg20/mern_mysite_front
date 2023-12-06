@@ -19,6 +19,7 @@ import Fab from "@mui/material/Fab";
 import NavBar from "./NavBar";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useNavigate } from "react-router-dom";
 import { Container } from "@material-ui/core";
 import {
   Dialog,
@@ -28,9 +29,9 @@ import {
   DialogActions,
 } from "@material-ui/core";
 
-function TodoCard({ data, handleEdit, handleDelete }) {
-  // updated
-  // console.log("Table data: ", data);
+import { useDispatch, useSelector } from "react-redux";
+
+const TodoCard = ({ data, handleEdit, handleDelete }) => {
   const { _id, title, description, user } = data;
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -42,29 +43,13 @@ function TodoCard({ data, handleEdit, handleDelete }) {
     // handleDelete(_id); // Call the handleDelete function with the ID
     handleDelete(e);
     setOpenDialog(false); // Close the dialog after confirming delete
+    // console.log(e.currentTarget.name);
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false); // Close the dialog if cancel is clicked
   };
   return (
-    // <TableRow key={_id}>
-    //   <TableCell>{title}</TableCell>
-    //   <TableCell>{description}</TableCell>
-
-    //   <Link
-    //     to={`/update-todo/edit?_id=${_id}&title=${title}&description=${description}&user=${user}`}
-    //   >
-    //     <Button name={_id} onClick={handleEdit}>
-    //       <CreateIcon></CreateIcon>
-    //     </Button>
-    //   </Link>
-
-    //   <Button name={_id} onClick={handleDelete}>
-    //     <DeleteIcon></DeleteIcon>
-    //   </Button>
-    // </TableRow>
-
     <>
       <TableRow key={_id}>
         <TableCell>{title}</TableCell>
@@ -125,13 +110,14 @@ function TodoCard({ data, handleEdit, handleDelete }) {
       </Dialog>
     </>
   );
-}
+};
 
-export default function ShowTodoList() {
-  const { user } = useParams();
+const ShowTodoList = () => {
+  const _user = useSelector((state) => state.user);
+  const { user, setUser } = useState(_user._id);
   const [todo, setTodo] = useState([]);
-  // const [open, setOpen] = useState(false); // added
-  const [id, setId] = useState(""); // added
+  // const [id, setId] = useState(""); // added
+  const navigate = useNavigate();
   const [update, setUpdate] = useState(false); // added
 
   useEffect(
@@ -139,26 +125,23 @@ export default function ShowTodoList() {
       axios
         .get("http://localhost:8000/api/todo", {
           params: {
-            user: user,
+            user: _user._id,
           },
         })
         .then((res) => {
-          // console.log("User: " + user);
-          // console.log("Intialize: " + res.data);
-          // console.log("%s %s", res.data.title, res.data.description);
           setTodo(res.data);
         })
         .catch((err) => {
           console.log(err.message);
         });
     },
-    [update, user], // updated
+    [update, _user._id], // updated
   );
 
   const handleEdit = (e) => {
     const id = e.currentTarget.name;
     // setId(id);
-    setId(e.currentTarget.name);
+    // setId(e.currentTarget.name);
     // console.log("Id of handleEdit" + this.id);
   };
 
@@ -169,11 +152,14 @@ export default function ShowTodoList() {
 
   const handleDelete = (e) => {
     const id = e.currentTarget.name;
+    console.log("Id: ", id);
     axios
       .delete(`http://localhost:8000/api/todo/${id}`)
       .then(() => {
         setTodo((data) => {
-          return data.filter((todo) => todo._id !== id);
+          const dd = data.filter((todo) => todo._id !== id);
+          console.log("dd: ", dd);
+          return dd;
         });
       })
       .catch((error) => {
@@ -183,31 +169,19 @@ export default function ShowTodoList() {
 
   return (
     <>
-      {/* <NavBar /> */}
       <Container
         className='container'
         style={{ padding: "20px", height: "auto" }}
       >
-        <Link to={`/create-todo/${user}`} className='button-new'>
-          {/* <Button color='primary' variant='contained'>
-            Add Data
-          </Button> */}
-          {/* <Button
-            variant='contained'
-            color='primary'
-            style={{
-              borderRadius: "100%",
-              // width: "50px",
-              // height: "50px",
-              padding: "0.5rem",
-            }}
-          >
-            +
-          </Button> */}
-          <Fab color='primary' aria-label='add'>
-            <AddIcon />
-          </Fab>
-        </Link>
+        {/* <Link to={`/todoAdd/${user}`} className='button-new'> */}
+        <Fab
+          color='primary'
+          aria-label='add'
+          onClick={() => navigate("/todoAdd")}
+        >
+          <AddIcon />
+        </Fab>
+        {/* </Link> */}
         <section className='contents'>
           <h1>TODO List</h1>
           <Table>
@@ -227,7 +201,11 @@ export default function ShowTodoList() {
             <TableHead></TableHead>
             <TableBody>
               {todo.map((data) => (
-                <TodoCard data={data} handleDelete={handleDelete} />
+                <TodoCard
+                  key={data._id}
+                  data={data}
+                  handleDelete={handleDelete}
+                />
               ))}
             </TableBody>
           </Table>
@@ -235,4 +213,5 @@ export default function ShowTodoList() {
       </Container>
     </>
   );
-}
+};
+export default ShowTodoList;
