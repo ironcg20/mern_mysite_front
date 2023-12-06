@@ -102,11 +102,6 @@ const SignUp = ({ handleLoginSuccess }) => {
             console.log("User is not exist!");
             console.log(err.message);
           });
-
-        // const id = res.data._id;
-        // console.log("ID: ", id);
-        // console.log(res.data.message);
-        // navigate(`/user/${id}`);
       })
       .catch((err) => {
         console.log("Error couldn't create USER");

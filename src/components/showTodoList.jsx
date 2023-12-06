@@ -186,7 +186,7 @@ export default function ShowTodoList() {
       {/* <NavBar /> */}
       <Container
         className='container'
-        style={{ padding: "20px", height: "900px" }}
+        style={{ padding: "20px", height: "auto" }}
       >
         <Link to={`/create-todo/${user}`} className='button-new'>
           {/* <Button color='primary' variant='contained'>
