@@ -15,9 +15,11 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
+import Checkbox from "@mui/material/Checkbox";
 import Fab from "@mui/material/Fab";
 import NavBar from "./NavBar";
 import AddIcon from "@mui/icons-material/Add";
+import Box from "@mui/material/Box";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
 import { Container } from "@material-ui/core";
@@ -30,43 +32,62 @@ import {
 } from "@material-ui/core";
 
 import { useDispatch, useSelector } from "react-redux";
+import {
+  set,
+  reset,
+  insertItem,
+  deleteItem,
+  updateItem,
+} from "../reducers/todoReducer";
 
 const TodoCard = ({ data, handleEdit, handleDelete }) => {
   const { _id, title, description, user } = data;
   const [openDialog, setOpenDialog] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [selected, setSelected] = useState(false);
+
+  const handleCheckboxChange = () => {
+    setSelected(!selected); // Toggle checkbox selection
+  };
 
   const handleDeleteClick = () => {
-    setOpenDialog(true); // Open the dialog when the delete button is clicked
+    setOpenDialog(true);
   };
 
   const handleConfirmDelete = (e) => {
-    // handleDelete(_id); // Call the handleDelete function with the ID
     handleDelete(e);
-    setOpenDialog(false); // Close the dialog after confirming delete
-    // console.log(e.currentTarget.name);
+    setOpenDialog(false);
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false); // Close the dialog if cancel is clicked
   };
+
   return (
     <>
       <TableRow key={_id}>
         <TableCell>{title}</TableCell>
         <TableCell>{description}</TableCell>
         <TableCell>
-          <Link
-            to={`/update-todo/edit?_id=${_id}&title=${title}&description=${description}&user=${user}`}
+          <IconButton
+            // onClick={handleEdit}
+            onClick={() => {
+              dispatch(
+                set({
+                  _id: _id,
+                  title: title,
+                  description: description,
+                  user: user,
+                }),
+              );
+              navigate(`/todoUpdate/`);
+            }}
+            aria-label='edit'
+            style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)" }}
           >
-            <IconButton
-              onClick={handleEdit}
-              aria-label='edit'
-              style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)" }}
-            >
-              <CreateIcon />
-            </IconButton>
-          </Link>
-          {/* <div style={{ marginRight: "0.5rem" }}></div> */}
+            <CreateIcon />
+          </IconButton>
           <IconButton
             name={_id}
             onClick={handleDeleteClick}
@@ -74,6 +95,13 @@ const TodoCard = ({ data, handleEdit, handleDelete }) => {
           >
             <DeleteIcon></DeleteIcon>
           </IconButton>
+        </TableCell>
+        <TableCell>
+          <Checkbox
+            checked={selected}
+            onChange={handleCheckboxChange}
+            color='primary'
+          />
         </TableCell>
       </TableRow>
 
@@ -114,9 +142,8 @@ const TodoCard = ({ data, handleEdit, handleDelete }) => {
 
 const TodoShow = () => {
   const _user = useSelector((state) => state.user);
-  const { user, setUser } = useState(_user._id);
+  // const { user, setUser } = useState(_user._id);
   const [todo, setTodo] = useState([]);
-  // const [id, setId] = useState(""); // added
   const navigate = useNavigate();
   const [update, setUpdate] = useState(false); // added
 
@@ -140,14 +167,6 @@ const TodoShow = () => {
 
   const handleEdit = (e) => {
     const id = e.currentTarget.name;
-    // setId(id);
-    // setId(e.currentTarget.name);
-    // console.log("Id of handleEdit" + this.id);
-  };
-
-  const handleUpdate = () => {
-    console.log("update:", update, !update);
-    setUpdate(!update);
   };
 
   const handleDelete = (e) => {
@@ -167,22 +186,34 @@ const TodoShow = () => {
       });
   };
 
+  const handleMultiDelete = (e) => {};
+
   return (
     <>
       <Container
         className='container'
         style={{ padding: "20px", height: "auto" }}
       >
-        {/* <Link to={`/todoAdd/${user}`} className='button-new'> */}
-        <Fab
-          color='primary'
-          aria-label='add'
-          onClick={() => navigate("/todoAdd")}
-          disabled={!_user.loggedIn}
-        >
-          <AddIcon />
-        </Fab>
-        {/* </Link> */}
+        <Box sx={{ display: "flex", gap: "10px" }}>
+          {" "}
+          {/* Use Box component with display flex and gap for spacing */}
+          <Fab
+            color='primary'
+            aria-label='add'
+            onClick={() => navigate("/todoAdd")}
+            disabled={!_user.loggedIn}
+          >
+            <AddIcon />
+          </Fab>
+          <Fab
+            color='secondary'
+            aria-label='delete'
+            onClick={() => handleMultiDelete()}
+            disabled={!_user.loggedIn}
+          >
+            <DeleteIcon />
+          </Fab>
+        </Box>
         <section className='contents'>
           <h1>TODO List</h1>
           <Table>
@@ -196,6 +227,9 @@ const TodoShow = () => {
                 </TableCell>
                 <TableCell>
                   <h3>Operations</h3>
+                </TableCell>
+                <TableCell>
+                  <h3>Select</h3>
                 </TableCell>
               </TableRow>
             </TableHead>

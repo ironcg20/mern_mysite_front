@@ -36,7 +36,13 @@ import {
   decrement,
 } from "./reducers/userReducer"; // Import actions from slice
 
-import { set, reset, insertItem, deleteItem, updatedItem } from "./reducers/todoReducer";
+import {
+  set,
+  reset,
+  insertItem,
+  deleteItem,
+  updateItem,
+} from "./reducers/todoReducer";
 
 function gString(length) {
   const characters =
@@ -72,66 +78,20 @@ const App = () => {
 
   return (
     <div className='App'>
-      {/* <Router>
+      <Router>
         <NavBar />
         <div style={{ marginTop: "4rem" }}></div>
         <Routes>
           <Route exact path='/' element={<Home />} />
           <Route path='/todoView' element={<TodoShow />} />
           <Route path='/todoAdd' element={<TodoInsert />} />
+          <Route path='/todoUpdate' element={<TodoUpdate />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
-      </Router> */}
-      <h1>ID: {todo._id}</h1>
-      <h1>Title: {todo.title}</h1>
-      <h1>Description: {todo.description}</h1>
-      <h1>User: {todo.user}</h1>
-      {/* <button onClick={() => dispatch(select(selectData))}>Select</button> */}
-      <button onClick={() => dispatch(set(setData2))}>Set</button>
-      <button onClick={() => dispatch(reset())}>Reset</button>
-      <button
-        onClick={() =>
-          dispatch(
-            insertItem({
-              title: gString(3),
-              description: gString(3),
-              user: "6567fabc0169fd67bd6bffbf",
-            }),
-          )
-        }
-      >
-        Insert
-      </button>
-      <button
-        onClick={() =>
-          dispatch(
-            deleteItem({
-              _id: "81182bc1-f26e-4cb0-823f-15739cd84573",
-              // title: gString(3),
-              // description: gString(3),
-              // user: "6567fabc0169fd67bd6bffbf",
-            }),
-          )
-        }
-      >
-        Delete
-      </button>
-      <button
-        onClick={() =>
-          dispatch(
-            deleteItem({
-              _id: "81182bc1-f26e-4cb0-823f-15739cd84573",
-              // title: gString(3),
-              // description: gString(3),
-              // user: "6567fabc0169fd67bd6bffbf",
-            }),
-          )
-        }
-      >
-        Update
-      </button>
+      </Router>
+ 
     </div>
   );
 };

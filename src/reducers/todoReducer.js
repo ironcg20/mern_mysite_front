@@ -148,7 +148,7 @@ export const updateItem = (data) => async (dispatch) => {
   return axios
     .put(`http://localhost:8000/api/todo/${data._id}`, todo)
     .then((res) => {
-      dispatch(setInserted(todo));
+      dispatch(setUpdated(todo));
       // setData({ title: "", description: "", user: user });
       // goBack();
     })

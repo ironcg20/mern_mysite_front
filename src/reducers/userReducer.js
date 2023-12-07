@@ -41,7 +41,7 @@ const userSlice = createSlice({
 export const { logIn, logOut, setMessage } = userSlice.actions;
 
 export const handleLogIn = (_data) => async (dispatch) => {
-  axios
+  return axios
     .post("http://localhost:8000/api/user", _data) // Adjust the API endpoint for sign-in
     .then((res) => {
       const { id, message } = res.data;
@@ -53,34 +53,26 @@ export const handleLogIn = (_data) => async (dispatch) => {
             password: _data.password,
           }),
         );
-        return true;
-        console.log("[Received Data]\n" + "ID: " + id);
-        console.log("Sign-in success!");
       } else {
         dispatch(setMessage(message));
-        console.log("Sign-in failed!");
-        return false;
       }
     })
     .catch((err) => {
       dispatch(setMessage(err.message));
-      console.log("User is not exist!");
-      console.log(err.message);
-      return false;
+      throw err;
     });
 };
 
 export const handleSignUp = (_data) => async (dispatch) => {
-  axios
+  return axios
     .post("http://localhost:8000/api/user/create", _data)
     .then((res) => {
       dispatch(setMessage(res.data.message));
-      // dispatch(handleLogIn({ email: _data.email, password: _data.password }));
-      return true;
+      dispatch(handleLogIn({ email: _data.email, password: _data.password }));
     })
     .catch((err) => {
       dispatch(setMessage(err.message));
-      return false;
+      throw err;
     });
 };
 

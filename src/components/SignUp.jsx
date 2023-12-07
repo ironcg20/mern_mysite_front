@@ -11,7 +11,11 @@ import IconButton from "@material-ui/core/IconButton";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import { useDispatch, useSelector } from "react-redux";
-import { handleLogIn, handleSignUp, handleLogOut } from "../reducers/userReducer"; // Import actions from slice
+import {
+  handleLogIn,
+  handleSignUp,
+  handleLogOut,
+} from "../reducers/userReducer"; // Import actions from slice
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,12 +41,12 @@ const useStyles = makeStyles((theme) => ({
 const SignUp = ({ handleLoginSuccess }) => {
   const classes = useStyles();
   const [data, setData] = useState({ email: "", password: "" });
-  const [error, setError] = useState({ email: "", password: "" }); // New state for error messages
+  const [error, setError] = useState({ email: "", password: "" });
   const navigate = useNavigate();
   const dispatch = useDispatch(); // Getting dispatch function
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
-    setShowPassword((prevShowPassword) => !prevShowPassword); // Toggle password visibility
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   function handleChange(e) {
@@ -69,23 +73,17 @@ const SignUp = ({ handleLoginSuccess }) => {
     //   return;
     // }
 
-    var flag_signUp = false;
-    dispatch(
-      (flag_signUp = handleSignUp({
-        email: data.email,
-        password: data.password,
-      })),
-    );
-    if (flag_signUp) {
-      var flag_logIn = false;
-      dispatch(
-        (flag_logIn = handleLogIn({
-          email: data.email,
-          password: data.password,
-        })),
-      );
-      if (flag_logIn) navigate("/todoView");
-    }
+    dispatch(handleSignUp({ email: data.email, password: data.password }))
+      .then(() => {
+        navigate("/todoView");
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+          setError({ ...error, email: "Email exist already!" });
+        } else {
+          setError({ ...error, email: error.message });
+        }
+      });
   }
 
   const isSignUpEnabled = data.email !== "" && data.password !== "";

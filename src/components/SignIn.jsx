@@ -35,12 +35,17 @@ const SignIn = ({ handleLoginSuccess }) => {
   const [data, setData] = useState({ email: "", password: "" });
   const dispatch = useDispatch(); // Getting dispatch function
   const navigate = useNavigate();
+  const [error, setError] = useState({ email: "", password: "" });
 
+  // function handleChange(e) {
+  //   setData((prevData) => ({
+  //     ...prevData,
+  //     [e.target.name]: e.target.value,
+  //   }));
+  // }
   function handleChange(e) {
-    setData((prevData) => ({
-      ...prevData,
-      [e.target.name]: e.target.value,
-    }));
+    setData((data) => ({ ...data, [e.target.name]: e.target.value }));
+    setError({ ...error, [e.target.name]: "" }); // Clear error message on input change
   }
 
   // function handleSubmit(e) {
@@ -77,13 +82,31 @@ const SignIn = ({ handleLoginSuccess }) => {
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent default form submission
     var flag_logIn = false;
+
     dispatch(
-      (flag_logIn = handleLogIn({
+      handleLogIn({
         email: data.email,
         password: data.password,
-      })),
-    );
-    if (flag_logIn) navigate("/todoView");
+      }),
+    )
+      .then(() => {
+        navigate("/todoView");
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          setError({ ...error, email: "User Not Found!" });
+        } else if (error.response && error.response.status === 401) {
+          setError({ ...error, password: "Incorrect password!" });
+        } else if (error.response && error.response.status === 500) {
+          setError({ ...error, email: "Error finding user" });
+        } else {
+          setError({
+            ...error,
+            email: "Unknown Error!",
+            password: "Unknown Error!",
+          });
+        }
+      });
   };
 
   return (
@@ -101,6 +124,8 @@ const SignIn = ({ handleLoginSuccess }) => {
             value={data.email}
             onChange={handleChange}
             name='email'
+            error={!!error.email} // Set error state for TextField
+            helperText={error.email} // Display error message if present
           />
           <TextField
             className={classes.textField}
@@ -111,7 +136,13 @@ const SignIn = ({ handleLoginSuccess }) => {
             value={data.password}
             onChange={handleChange}
             name='password'
+            error={!!error.password} // Set error state for TextField
+            helperText={error.password} // Display error message if present
           />
+          <Typography variant='body2' color='error'>
+            {/* Display fail text above the signup button with red color */}
+            {error.email || error.password}
+          </Typography>
           <Button
             className={classes.button}
             variant='contained'

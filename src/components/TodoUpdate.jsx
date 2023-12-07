@@ -10,46 +10,33 @@ import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Fab from "@mui/material/Fab";
+import { useDispatch, useSelector } from "react-redux";
+// import { useNavigate } from "react-router-dom";
+import {
+  set,
+  reset,
+  insertItem,
+  deleteItem,
+  updateItem,
+} from "../reducers/todoReducer";
 
 export default function TodoUpdate() {
-  // const { _id, title, description } = useParams();
-
   const location = useLocation();
-  const params = new URLSearchParams(location.search);
+  const _user = useSelector((state) => state.todo);
+  const { _id, title, description, user } = _user;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const _id = params.get("_id");
-  const title = params.get("title");
-  const description = params.get("description");
-  const user = params.get("user");
-
-  // console.log("Params:", _id, title, description);
-  // const { _id } = useParams();
   const [data, setData] = useState({
     _id: _id,
     title: title,
     description: description,
     user: user,
   });
-  const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   axios
-  //     .get(`http://localhost:8000/api/todo/${_id}`)
-  //     .then((res) => {
-  //       console.log("_id: " + _id);
-  //       setData(res.data);
-  //     })
-  //     .catch((err) => {
-  //       console.error("Loading error");
-  //     });
-  // }, [_id]);
 
   const handleChange = (e) => {
-    // console.log("Name: " + e.target.name);
     const { name, value } = e.target;
-    // console.log("Changed: ", name, " - ", value);
     setData((data) => ({ ...data, [name]: value }));
-    // console.log("Data: ", data.title, data.description, data.user);
   };
 
   const todo = {
@@ -61,10 +48,15 @@ export default function TodoUpdate() {
   const handleSubmit = (e) => {
     const id = _id;
     e.preventDefault();
-    console.log("[Submit]\n");
-    console.log("ID: ", _id, "\n");
-    console.log(data.title, data.description, data.user);
-    console.log("[/Submit]");
+
+    dispatch(
+      updateItem({
+        _id: _id,
+        title: todo.title,
+        description: todo.description,
+        user: _user.user,
+      }),
+    );
     axios
       .put(`http://localhost:8000/api/todo/${id}`, todo)
       .then((res) => {
