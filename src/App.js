@@ -19,9 +19,9 @@ import {
 } from "@mui/material";
 import {
   NavBar,
-  ShowTodoList,
-  CreateTodo,
-  UpdateTodo,
+  TodoShow,
+  TodoInsert,
+  TodoUpdate,
   Home,
   SignUp,
   SignIn,
@@ -44,8 +44,8 @@ const App = () => {
         <div style={{ marginTop: "4rem" }}></div>
         <Routes>
           <Route exact path='/' element={<Home />} />
-          <Route path='/todoView' element={<ShowTodoList />} />
-          <Route path='/todoAdd' element={<CreateTodo />} />
+          <Route path='/todoView' element={<TodoShow />} />
+          <Route path='/todoAdd' element={<TodoInsert />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
           <Route path='*' element={<NotFoundPage />} />

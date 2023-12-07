@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
-import UpdateTodo from "./updateTodo";
+import TodoUpdate from "./TodoUpdate";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -112,7 +112,7 @@ const TodoCard = ({ data, handleEdit, handleDelete }) => {
   );
 };
 
-const ShowTodoList = () => {
+const TodoShow = () => {
   const _user = useSelector((state) => state.user);
   const { user, setUser } = useState(_user._id);
   const [todo, setTodo] = useState([]);
@@ -215,4 +215,4 @@ const ShowTodoList = () => {
     </>
   );
 };
-export default ShowTodoList;
+export default TodoShow;

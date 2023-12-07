@@ -1,8 +1,8 @@
 // import React, { useState } from "react";
 // import { BrowserRouter, Route, Routes, Switch } from "react-router-dom";
 // import ShowTodoList from "./components/showTodoList";
-// import CreateTodo from "./components/createTodo";
-// import UpdateTodo from "./components/updateTodo";
+// import TodoInsert from "./components/TodoInsert";
+// import TodoUpdate from "./components/TodoUpdate";
 // import App_ from "./components/App_";
 // import "./App.scss";
 // import NavBar from "./components/NavBar";
@@ -51,8 +51,8 @@
 //             <SignIn setLoggedIn={setLoggedIn} />
 //           </Route>
 //           <Route path='/signin' element={<SignIn />} />
-//           <Route path='/create-todo/:user' element={<CreateTodo />} />
-//           <Route path='/update-todo/:_id' element={<UpdateTodo />} />
+//           <Route path='/create-todo/:user' element={<TodoInsert />} />
+//           <Route path='/update-todo/:_id' element={<TodoUpdate />} />
 //         </Switch>
 //       </Router>
 //     </div>
@@ -64,9 +64,9 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import ShowTodoList from "./components/showTodoList";
-import CreateTodo from "./components/createTodo";
-import UpdateTodo from "./components/updateTodo";
+import TodoShow from "./components/TodoShow";
+import TodoInsert from "./components/TodoInsert";
+import TodoUpdate from "./components/TodoUpdate";
 import NavBar from "./components/NavBar";
 import Home from "./components/Home";
 import SignUp from "./components/SignUp";
@@ -179,10 +179,7 @@ const App = () => {
           <div style={{ marginTop: "4rem" }}></div>
           <Routes>
             <Route exact path='/' element={<Home />} />
-            <Route
-              path='/user/:user'
-              element={<ShowTodoList />}
-            />
+            <Route path='/user/:user' element={<ShowTodoList />} />
             <Route
               path='/signup'
               element={<SignUp handleLoginSuccess={handleLoginSuccess} />}
@@ -191,8 +188,8 @@ const App = () => {
               path='/signin'
               element={<SignIn handleLoginSuccess={handleLoginSuccess} />}
             />
-            <Route path='/create-todo/:user' element={<CreateTodo />} />
-            <Route path='/update-todo/:_id' element={<UpdateTodo />} />
+            <Route path='/create-todo/:user' element={<TodoInsert />} />
+            <Route path='/update-todo/:_id' element={<TodoUpdate />} />
             <Route path='*' element={<NotFoundPage />} />
           </Routes>
           <Footer />

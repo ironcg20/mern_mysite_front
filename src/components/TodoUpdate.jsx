@@ -1,4 +1,4 @@
-// src/components/updateTodo.jsx
+// src/components/TodoUpdate.jsx
 
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
@@ -11,7 +11,7 @@ import Button from "@material-ui/core/Button";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Fab from "@mui/material/Fab";
 
-export default function UpdateTodo() {
+export default function TodoUpdate() {
   // const { _id, title, description } = useParams();
 
   const location = useLocation();
