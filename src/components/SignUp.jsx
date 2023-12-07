@@ -11,7 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import { useDispatch, useSelector } from "react-redux";
-import { handleLogIn, handleSignUp, handleLogOut } from "../reducers/userSlice"; // Import actions from slice
+import { handleLogIn, handleSignUp, handleLogOut } from "../reducers/userReducer"; // Import actions from slice
 
 const useStyles = makeStyles((theme) => ({
   root: {

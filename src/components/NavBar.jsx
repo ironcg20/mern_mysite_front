@@ -21,7 +21,7 @@ import store from "../app/store"; // Import the store
 import { Grid } from "@material-ui/core";
 // import { useNavigate } from "react-router-dom";
 // import { _handleLogIn } from "";
-import { handleLogIn, handleSignUp, handleLogOut } from "../reducers/userSlice"; // Import actions from slice
+import { handleLogIn, handleSignUp, handleLogOut } from "../reducers/userReducer"; // Import actions from slice
 
 const NavBar = () => {
   const user = useSelector((state) => state.user);

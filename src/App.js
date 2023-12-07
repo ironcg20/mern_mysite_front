@@ -34,7 +34,7 @@ import {
   setMessage,
   increment,
   decrement,
-} from "./reducers/userSlice"; // Import actions from slice
+} from "./reducers/userReducer"; // Import actions from slice
 
 const App = () => {
   return (

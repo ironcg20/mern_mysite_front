@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { GoogleLogin } from "react-google-login";
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
-import { handleLogIn } from "../reducers/userSlice"; // Import actions from slice
+import { handleLogIn } from "../reducers/userReducer"; // Import actions from slice
 import { useDispatch, useSelector } from "react-redux";
 import "../index.css";
 
