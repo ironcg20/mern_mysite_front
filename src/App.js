@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import store from "./app/store"; // Import the store
 import axios from "axios";
+
 import {
   createTheme,
   ThemeProvider,
@@ -33,7 +34,7 @@ import {
   setMessage,
   increment,
   decrement,
-} from "./features/user/userSlice"; // Import actions from slice
+} from "./reducers/userSlice"; // Import actions from slice
 
 const App = () => {
   return (
@@ -47,6 +48,7 @@ const App = () => {
           <Route path='/todoAdd' element={<CreateTodo />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
+          <Route path='*' element={<NotFoundPage />} />
         </Routes>
       </Router>
     </div>

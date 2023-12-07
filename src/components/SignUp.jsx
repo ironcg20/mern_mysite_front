@@ -11,6 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import { useDispatch, useSelector } from "react-redux";
+import { handleLogIn, handleSignUp, handleLogOut } from "../reducers/userSlice"; // Import actions from slice
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,6 +39,7 @@ const SignUp = ({ handleLoginSuccess }) => {
   const [data, setData] = useState({ email: "", password: "" });
   const [error, setError] = useState({ email: "", password: "" }); // New state for error messages
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // Getting dispatch function
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword); // Toggle password visibility
@@ -50,11 +52,6 @@ const SignUp = ({ handleLoginSuccess }) => {
 
   function handleSubmit(e) {
     e.preventDefault();
-
-    const user = {
-      email: data.email,
-      password: data.password,
-    };
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(data.email)) {
@@ -72,42 +69,23 @@ const SignUp = ({ handleLoginSuccess }) => {
     //   return;
     // }
 
-    console.log(
-      "Sign Up - [Submit data]\n" +
-        "Email: " +
-        data.email +
-        " Password: " +
-        data.password,
+    var flag_signUp = false;
+    dispatch(
+      (flag_signUp = handleSignUp({
+        email: data.email,
+        password: data.password,
+      })),
     );
-
-    axios
-      .post("http://localhost:8000/api/user/create", data)
-      .then((res) => {
-        setData({ email: "", password: "" });
-        setError({ email: "", password: "" }); // Clear error messages on successful submission
-
-        axios
-          .post("http://localhost:8000/api/user", data) // Adjust the API endpoint for sign-in
-          .then((res) => {
-            const { id, message } = res.data;
-            if (id) {
-              console.log("[Received Data]\n" + "ID: " + id);
-              console.log("Sign-in success!");
-              handleLoginSuccess(data.email);
-              navigate(`/user/${id}`);
-            } else {
-              console.log("Sign-in failed!");
-            }
-          })
-          .catch((err) => {
-            console.log("User is not exist!");
-            console.log(err.message);
-          });
-      })
-      .catch((err) => {
-        console.log("Error couldn't create USER");
-        console.log(err.message);
-      });
+    if (flag_signUp) {
+      var flag_logIn = false;
+      dispatch(
+        (flag_logIn = handleLogIn({
+          email: data.email,
+          password: data.password,
+        })),
+      );
+      if (flag_logIn) navigate("/todoView");
+    }
   }
 
   const isSignUpEnabled = data.email !== "" && data.password !== "";

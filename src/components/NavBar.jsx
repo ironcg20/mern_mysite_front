@@ -21,11 +21,7 @@ import store from "../app/store"; // Import the store
 import { Grid } from "@material-ui/core";
 // import { useNavigate } from "react-router-dom";
 // import { _handleLogIn } from "";
-import {
-  handleLogIn,
-  handleSignUp,
-  handleLogOut,
-} from "../features/user/userSlice"; // Import actions from slice
+import { handleLogIn, handleSignUp, handleLogOut } from "../reducers/userSlice"; // Import actions from slice
 
 const NavBar = () => {
   const user = useSelector((state) => state.user);
@@ -34,6 +30,22 @@ const NavBar = () => {
 
   const _loginData = { email: "111", password: "111" };
   const _signUpData = { email: "dddad", password: "111" };
+
+  const [value, setValue] = useState(0);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    switch (newValue) {
+      case 0:
+        navigate("/todoView"); // Define your route paths accordingly
+        break;
+      case 1:
+        navigate("/aboutUs");
+        break;
+      // Add more cases for additional tabs
+      default:
+        break;
+    }
+  };
 
   return (
     <>
@@ -49,6 +61,25 @@ const NavBar = () => {
           <IconButton edge='start' color='primary' aria-label='Menu'>
             <MenuIcon />
           </IconButton>
+
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label='basic tabs example'
+            variant='scrollable'
+            style={{
+              flex: 1,
+              display: "flex",
+              justifyContent: "center",
+              minWidth: "500px",
+              marginLeft: "30rem",
+            }}
+          >
+            <Tab label='Todo View' style={{ color: "black" }} />
+            <Tab label='About Us' />
+            <Tab label='Our Services' />
+            <Tab label='Contact Us' />
+          </Tabs>
 
           <Grid container alignItems='center' justify='flex-end'>
             {user.loggedIn ? (

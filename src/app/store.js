@@ -1,6 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice'; // Import the counterreducer
-import userReducer from '../features/user/userSlice'; // Import the userreducer
+import { configureStore } from "@reduxjs/toolkit";
+import persistedReducer from "./persistConfig";
+import counterReducer from "../reducers/counterSlice"; // Import the counterreducer
+import userReducer from "../reducers/userSlice"; // Import the userreducer
 
 export default configureStore({
   reducer: {
@@ -8,3 +9,9 @@ export default configureStore({
     user: userReducer,
   },
 });
+
+// import { createStore } from "redux";
+// import persistedReducer from "./persistConfig";
+
+// const store = createStore(persistedReducer);
+// export default store;

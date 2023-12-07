@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { GoogleLogin } from "react-google-login";
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
-import { handleLogIn } from "../features/user/userSlice"; // Import actions from slice
+import { handleLogIn } from "../reducers/userSlice"; // Import actions from slice
 import { useDispatch, useSelector } from "react-redux";
 import "../index.css";
 
@@ -76,8 +76,14 @@ const SignIn = ({ handleLoginSuccess }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent default form submission
-    dispatch(handleLogIn({ email: data.email, password: data.password }));
-    navigate("/todoView");
+    var flag_logIn = false;
+    dispatch(
+      (flag_logIn = handleLogIn({
+        email: data.email,
+        password: data.password,
+      })),
+    );
+    if (flag_logIn) navigate("/todoView");
   };
 
   return (

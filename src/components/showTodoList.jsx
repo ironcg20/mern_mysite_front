@@ -178,6 +178,7 @@ const ShowTodoList = () => {
           color='primary'
           aria-label='add'
           onClick={() => navigate("/todoAdd")}
+          disabled={!_user.loggedIn}
         >
           <AddIcon />
         </Fab>

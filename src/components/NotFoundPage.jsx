@@ -6,8 +6,13 @@ import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   errorContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     textAlign: "center",
-    marginTop: theme.spacing(8),
+    height: "80vh", // Adjusted height for better visibility
+    gap: theme.spacing(3), // Spacing between elements
   },
 }));
 
