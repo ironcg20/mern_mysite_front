@@ -41,14 +41,19 @@ const todoSlice = createSlice({
 
     setUpdated: (state, action) => {
       const { _id, title, description, user } = action.payload;
-      state.updated._id = _id;
-      state.updated.title = title;
-      state.updated.description = description;
-      state.updated.user = user;
+      if (_id && title && description && user) {
+        state.updated = {
+          _id,
+          title,
+          description,
+          user,
+        };
+      } else {
+        console.error("Invalid payload structure for setUpdated action");
+      }
     },
 
     setDeleted: (state, action) => {
-      // const { _id} = action.payload;
       state.deleted._id = action.payload._id;
     },
 
@@ -145,20 +150,33 @@ export const updateItem = (data) => async (dispatch) => {
     description: data.description,
     user: data.user,
   };
+
   dispatch(set(todo));
 
   return axios
     .put(`http://localhost:8000/api/todo/${data._id}`, todo)
     .then((res) => {
       dispatch(setUpdated(todo));
-      // setData({ title: "", description: "", user: user });
-      // goBack();
     })
     .catch((error) => {
-      console.log("Failed to update todo");
-      console.log(error.message);
       throw error;
     });
+
+  // try {
+  //   const response = await axios.put(
+  //     `http://localhost:8000/api/todo/${data._id}`,
+  //     todo,
+  //   );
+  //   const updatedTodo = response.data; // Assuming the server responds with the updated TODO object
+
+  //   // Dispatch set action to update local state
+  //   dispatch(set(updatedTodo));
+
+  //   // Dispatch setUpdated action with the updated data received from the server
+  //   dispatch(setUpdated(updatedTodo));
+  // } catch (error) {
+  //   throw error;
+  // }
 };
 
 export default todoSlice.reducer;

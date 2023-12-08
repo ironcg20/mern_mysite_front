@@ -21,18 +21,18 @@ import {
 } from "../reducers/todoReducer";
 
 export default function TodoUpdate() {
-  const location = useLocation();
   const _user = useSelector((state) => state.todo);
   const { _id, title, description, user } = _user;
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   const [data, setData] = useState({
     _id: _id,
     title: title,
     description: description,
     user: user,
   });
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,27 +46,30 @@ export default function TodoUpdate() {
   };
 
   const handleSubmit = (e) => {
-    const id = _id;
+    const id = _user._id;
     e.preventDefault();
 
     dispatch(
       updateItem({
-        _id: _id,
+        _id: _user._id,
         title: todo.title,
         description: todo.description,
         user: _user.user,
       }),
     );
-    axios
-      .put(`http://localhost:8000/api/todo/${id}`, todo)
-      .then((res) => {
-        setData({ title: "", description: "", user: user });
-        goBack();
-      })
-      .catch((err) => {
-        console.log("Failed to update todo");
-        console.log(err.message);
-      });
+
+    goBack();
+
+    // axios
+    //   .put(`http://localhost:8000/api/todo/${id}`, todo)
+    //   .then((res) => {
+    //     setData({ title: "", description: "", user: user });
+    //     goBack();
+    //   })
+    //   .catch((err) => {
+    //     console.log("Failed to update todo");
+    //     console.log(err.message);
+    //   });
   };
 
   const goBack = () => {
