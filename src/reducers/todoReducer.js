@@ -27,6 +27,8 @@ const todoSlice = createSlice({
     deleted: {
       _id: "",
     },
+
+    selected: {},
   },
   reducers: {
     setInserted: (state, action) => {

@@ -23,6 +23,7 @@ import Box from "@mui/material/Box";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
 import { Container } from "@material-ui/core";
+import ButtonBase from "@material-ui/core/ButtonBase";
 import {
   Dialog,
   DialogContent,
@@ -40,15 +41,24 @@ import {
   updateItem,
 } from "../reducers/todoReducer";
 
-const TodoCard = ({ data, handleEdit, handleDelete }) => {
+const TodoCard = ({
+  data,
+  handleEdit,
+  handleDelete,
+  selectedItems,
+  setSelectedItems,
+}) => {
   const { _id, title, description, user } = data;
   const [openDialog, setOpenDialog] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [selected, setSelected] = useState(false);
 
-  const handleCheckboxChange = () => {
-    setSelected(!selected); // Toggle checkbox selection
+  const handleCheckboxChange = (e) => {
+    const itemId = e.target.name;
+    setSelectedItems((prevSelectedItems) => ({
+      ...prevSelectedItems,
+      [itemId]: !prevSelectedItems[itemId],
+    }));
   };
 
   const handleDeleteClick = () => {
@@ -64,10 +74,22 @@ const TodoCard = ({ data, handleEdit, handleDelete }) => {
     setOpenDialog(false); // Close the dialog if cancel is clicked
   };
 
+  const handleRowClick = () => {
+    setSelectedItems((prevSelectedItems) => ({
+      ...prevSelectedItems,
+      [_id]: !prevSelectedItems[_id], // Toggle the checkbox status
+    }));
+  };
+
   return (
     <>
-      <TableRow key={_id}>
-        <TableCell>{title}</TableCell>
+      <TableRow key={_id} onClick={handleRowClick} style={{ cursor: "pointer" }}>
+        <TableCell >
+          {/* <ButtonBase onClick={handleRowClick}> */}
+          {/* Content of the TableRow */}
+          <h3>{title}</h3>
+          {/* </ButtonBase> */}
+        </TableCell>
         <TableCell>{description}</TableCell>
         <TableCell>
           <IconButton
@@ -89,6 +111,7 @@ const TodoCard = ({ data, handleEdit, handleDelete }) => {
             <CreateIcon />
           </IconButton>
           <IconButton
+            // name='delete'
             name={_id}
             onClick={handleDeleteClick}
             style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)" }}
@@ -98,9 +121,10 @@ const TodoCard = ({ data, handleEdit, handleDelete }) => {
         </TableCell>
         <TableCell>
           <Checkbox
-            checked={selected}
+            checked={selectedItems[_id] || false}
             onChange={handleCheckboxChange}
             color='primary'
+            name={_id}
           />
         </TableCell>
       </TableRow>
@@ -142,13 +166,26 @@ const TodoCard = ({ data, handleEdit, handleDelete }) => {
 
 const TodoShow = () => {
   const _user = useSelector((state) => state.user);
-  // const { user, setUser } = useState(_user._id);
-  const [todo, setTodo] = useState([]);
-  const navigate = useNavigate();
   const [update, setUpdate] = useState(false); // added
+  const [todo, setTodo] = useState([]);
+  const [selectedItems, setSelectedItems] = useState({});
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [multiDeleteEnabled, setMultiDeleteEnabled] = useState(false);
+  const [checkedCount, setCheckedCount] = useState(0);
+  const [openDialog, setOpenDialog] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleMultiDeleteClick = () => {
+    setOpenDialog(true);
+  };
 
   useEffect(
     () => {
+      const checkedCount = Object.values(selectedItems).filter(Boolean).length;
+      setCheckedCount(checkedCount);
+      setMultiDeleteEnabled(checkedCount > 0);
+
       axios
         .get("http://localhost:8000/api/todo", {
           params: {
@@ -162,34 +199,93 @@ const TodoShow = () => {
           console.log(err.message);
         });
     },
-    [update, _user._id], // updated
+    [update, _user._id, selectedItems, todo], // updated
   );
+
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    let prevSelectedItems = selectedItems; // Define prevSelectedItems here
+    if (name === "selectAll") {
+      setSelectAllChecked(checked);
+      const updatedSelectedItems = todo.reduce((acc, item) => {
+        acc[item._id] = checked;
+        return acc;
+      }, {});
+      setSelectedItems(updatedSelectedItems);
+    } else {
+      setSelectedItems((prevSelectedItems) => ({
+        ...prevSelectedItems,
+        [name]: checked,
+      }));
+      const allChecked = todo.every((item) => prevSelectedItems[item._id]);
+      setSelectAllChecked(allChecked);
+    }
+  };
 
   const handleEdit = (e) => {
     const id = e.currentTarget.name;
   };
 
   const handleDelete = (e) => {
-    const id = e.currentTarget.name;
-    console.log("Id: ", id);
-    axios
-      .delete(`http://localhost:8000/api/todo/${id}`)
-      .then(() => {
-        setTodo((data) => {
-          const dd = data.filter((todo) => todo._id !== id);
-          console.log("dd: ", dd);
-          return dd;
-        });
-      })
-      .catch((error) => {
-        console.log("Error deleting todo:", error.message);
-      });
+    dispatch(deleteItem({ _id: e.currentTarget.name }));
   };
 
-  const handleMultiDelete = (e) => {};
+  const handleMultiDelete = () => {
+    const selectedIds = Object.keys(selectedItems).filter(
+      (itemId) => selectedItems[itemId],
+    );
+    selectedIds.forEach((id) => {
+      console.log(id, " ");
+      dispatch(deleteItem({ _id: id }));
+    });
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false); // Close the dialog if cancel is clicked
+  };
+  const handleConfirmMultiDelete = () => {
+    handleMultiDelete();
+    setOpenDialog(false);
+  };
 
   return (
     <>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id='alert-dialog-title'>{"Multiple Delete"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            <Typography variant='contained' component='span' color='primary'>
+              {checkedCount}
+            </Typography>{" "}
+            elements selected. Are you sure you want to delete
+            <br />
+            them?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseDialog}
+            color='primary'
+            variant='contained'
+          >
+            Cancel
+          </Button>
+          <Button
+            // name={_id}
+            onClick={handleConfirmMultiDelete}
+            color='secondary'
+            variant='contained'
+            autoFocus
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Container
         className='container'
         style={{ padding: "20px", height: "auto" }}
@@ -208,14 +304,17 @@ const TodoShow = () => {
           <Fab
             color='secondary'
             aria-label='delete'
-            onClick={() => handleMultiDelete()}
-            disabled={!_user.loggedIn}
+            onClick={() => handleMultiDeleteClick()}
+            disabled={!_user.loggedIn || !multiDeleteEnabled} // Enable or disable the multi-delete button
           >
             <DeleteIcon />
           </Fab>
         </Box>
         <section className='contents'>
           <h1>TODO List</h1>
+          <h3>
+            <span>{checkedCount}</span> Items selected
+          </h3>
           <Table>
             <TableHead>
               <TableRow>
@@ -229,7 +328,12 @@ const TodoShow = () => {
                   <h3>Operations</h3>
                 </TableCell>
                 <TableCell>
-                  <h3>Select</h3>
+                  <Checkbox
+                    checked={selectAllChecked}
+                    onChange={handleCheckboxChange}
+                    color='primary'
+                    name='selectAll'
+                  />
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -240,6 +344,8 @@ const TodoShow = () => {
                   key={data._id}
                   data={data}
                   handleDelete={handleDelete}
+                  selectedItems={selectedItems}
+                  setSelectedItems={setSelectedItems}
                 />
               ))}
             </TableBody>

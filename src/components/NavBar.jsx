@@ -21,24 +21,31 @@ import store from "../app/store"; // Import the store
 import { Grid } from "@material-ui/core";
 // import { useNavigate } from "react-router-dom";
 // import { _handleLogIn } from "";
-import { handleLogIn, handleSignUp, handleLogOut } from "../reducers/userReducer"; // Import actions from slice
+import {
+  handleLogIn,
+  handleSignUp,
+  handleLogOut,
+} from "../reducers/userReducer"; // Import actions from slice
 
 const NavBar = () => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch(); // Getting dispatch function
   const navigate = useNavigate();
 
-  const _loginData = { email: "111", password: "111" };
-  const _signUpData = { email: "dddad", password: "111" };
+  // const _loginData = { email: "111", password: "111" };
+  // const _signUpData = { email: "dddad", password: "111" };
 
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
     switch (newValue) {
       case 0:
-        navigate("/todoView"); // Define your route paths accordingly
+        navigate("/home"); // Define your route paths accordingly
         break;
       case 1:
+        navigate("/todoView"); // Define your route paths accordingly
+        break;
+      case 2:
         navigate("/aboutUs");
         break;
       // Add more cases for additional tabs
@@ -71,10 +78,11 @@ const NavBar = () => {
               flex: 1,
               display: "flex",
               justifyContent: "center",
-              minWidth: "500px",
+              minWidth: "700px",
               marginLeft: "30rem",
             }}
           >
+            <Tab label='Home' style={{ color: "black" }} />
             <Tab label='Todo View' style={{ color: "black" }} />
             <Tab label='About Us' />
             <Tab label='Our Services' />

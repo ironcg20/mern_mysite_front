@@ -82,7 +82,7 @@ const App = () => {
         <NavBar />
         <div style={{ marginTop: "4rem" }}></div>
         <Routes>
-          <Route exact path='/' element={<Home />} />
+          <Route exact path='/home' element={<Home />} />
           <Route path='/todoView' element={<TodoShow />} />
           <Route path='/todoAdd' element={<TodoInsert />} />
           <Route path='/todoUpdate' element={<TodoUpdate />} />
@@ -91,7 +91,6 @@ const App = () => {
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
       </Router>
- 
     </div>
   );
 };
