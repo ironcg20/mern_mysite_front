@@ -7,6 +7,7 @@ import { GoogleLogin } from "react-google-login";
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import { handleLogIn } from "../reducers/userReducer"; // Import actions from slice
 import { useDispatch, useSelector } from "react-redux";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import "../index.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,53 +34,20 @@ const useStyles = makeStyles((theme) => ({
 const SignIn = ({ handleLoginSuccess }) => {
   const classes = useStyles();
   const [data, setData] = useState({ email: "", password: "" });
-  const dispatch = useDispatch(); // Getting dispatch function
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState({ email: "", password: "" });
-
-  // function handleChange(e) {
-  //   setData((prevData) => ({
-  //     ...prevData,
-  //     [e.target.name]: e.target.value,
-  //   }));
-  // }
-  function handleChange(e) {
-    setData((data) => ({ ...data, [e.target.name]: e.target.value }));
-    setError({ ...error, [e.target.name]: "" }); // Clear error message on input change
-  }
-
-  // function handleSubmit(e) {
-  //   e.preventDefault();
-
-  //   console.log(
-  //     "[Submit data]\n" +
-  //       "Email: " +
-  //       data.email +
-  //       " Password: " +
-  //       data.password,
-  //   );
-  //   axios
-  //     .post("http://localhost:8000/api/user", data) // Adjust the API endpoint for sign-in
-  //     .then((res) => {
-  //       const { id, message } = res.data;
-  //       if (id) {
-  //         console.log("[Received Data]\n" + "ID: " + id);
-  //         console.log("Sign-in success!");
-  //         handleLoginSuccess(data.email);
-  //         navigate(`/user/${id}`);
-  //       } else {
-  //         console.log("Sign-in failed!");
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log("User is not exist!");
-  //       console.log(err.message);
-  //     });
-  // }
-
   const isSignInEnabled = data.email !== "" && data.password !== "";
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setData((data) => ({ ...data, [e.target.name]: e.target.value }));
+    setError({ ...error, [e.target.name]: "" });
+  };
+
   const handleSubmit = (e) => {
+    setLoading(true);
     e.preventDefault(); // Prevent default form submission
     var flag_logIn = false;
 
@@ -106,6 +74,9 @@ const SignIn = ({ handleLoginSuccess }) => {
             password: "Unknown Error!",
           });
         }
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -151,7 +122,15 @@ const SignIn = ({ handleLoginSuccess }) => {
             type='submit'
             disabled={!isSignInEnabled}
           >
-            Sign In
+            {loading ? (
+              <CircularProgress
+                style={{ color: "white", width: "20px", height: "20px" }}
+              />
+            ) : (
+              " Sign In"
+            )}
+
+            {/* Render CircularProgress component */}
           </Button>
           {/* <div class='m-top'>
             <GoogleLogin

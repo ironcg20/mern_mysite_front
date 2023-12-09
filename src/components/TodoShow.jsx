@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams, Link } from "react-router-dom";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -15,6 +14,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { useNavigate } from "react-router-dom";
 import { Container } from "@material-ui/core";
 import {
@@ -24,15 +24,14 @@ import {
   DialogContentText,
   DialogActions,
 } from "@material-ui/core";
-
 import { useDispatch, useSelector } from "react-redux";
 import { set, deleteItem } from "../reducers/todoReducer";
 
 const TodoShow = () => {
-  // const currentUser=useState("");
   const currentUser = useSelector((state) => state.user);
   const [todo, setTodo] = useState([]);
   const [updateFlag, setUpdateFlag] = useState(false); // added
+  const [loading, setLoading] = useState(false);
 
   const [selectedItems, setSelectedItems] = useState({});
   const [selectAllChecked, setSelectAllChecked] = useState(false);
@@ -43,6 +42,7 @@ const TodoShow = () => {
   const dispatch = useDispatch();
 
   const load_TodoData = () => {
+    setLoading(true);
     axios
       .get("http://localhost:8000/api/todo", {
         params: {
@@ -54,26 +54,22 @@ const TodoShow = () => {
       })
       .catch((err) => {
         console.log(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
-  useEffect(
-    () => {
-      const count = Object.values(selectedItems).filter(Boolean).length;
-      setCheckedCount(count);
-      setMultiDeleteEnabled(checkedCount > 0);
-      load_TodoData();
-    },
-    [updateFlag, currentUser], // updated
-  );
-
-  const handle_MultiDelete_Click = () => {
-    setOpenDialog(true);
-  };
+  useEffect(() => {
+    const count = Object.values(selectedItems).filter(Boolean).length;
+    setCheckedCount(count);
+    setMultiDeleteEnabled(count > 0);
+    load_TodoData();
+  }, [updateFlag, currentUser]);
 
   const handle_Checkbox_Change = (e) => {
     const { name, checked } = e.target;
-    let prevSelectedItems = selectedItems; // Define prevSelectedItems here
+    let prevSelectedItems = selectedItems;
     if (name === "selectAll") {
       setSelectAllChecked(checked);
       const updatedSelectedItems = todo.reduce((acc, item) => {
@@ -89,10 +85,6 @@ const TodoShow = () => {
       const allChecked = todo.every((item) => prevSelectedItems[item._id]);
       setSelectAllChecked(allChecked);
     }
-  };
-
-  const handle_Delete = (e) => {
-    dispatch(deleteItem({ _id: e.currentTarget.name }));
     setUpdateFlag(!updateFlag);
   };
 
@@ -104,15 +96,27 @@ const TodoShow = () => {
       console.log(id, " ");
       dispatch(deleteItem({ _id: id }));
     });
-    // setUpdateFlag(!updateFlag);
+    setSelectedItems([]);
   };
 
+  //Dialog Operations ------------------
   const handle_Dialog_Close = () => {
     setOpenDialog(false); // Close the dialog if cancel is clicked
   };
-  const handleConfirmMultiDelete = () => {
+
+  const handle_Delete = (e) => {
+    dispatch(deleteItem({ _id: e.currentTarget.name }));
+    setUpdateFlag(!updateFlag);
+  };
+
+  const handle_MultiDelete_Click = () => {
+    setOpenDialog(true);
+  };
+
+  const handle_MultiDelete_Confirm = () => {
     handleMultiDelete();
     setOpenDialog(false);
+    setUpdateFlag(!updateFlag);
   };
 
   return (
@@ -144,7 +148,7 @@ const TodoShow = () => {
           </Button>
           <Button
             // name={_id}
-            onClick={handleConfirmMultiDelete}
+            onClick={handle_MultiDelete_Confirm}
             color='secondary'
             variant='contained'
             autoFocus
@@ -173,10 +177,15 @@ const TodoShow = () => {
             color='secondary'
             aria-label='delete'
             onClick={() => handle_MultiDelete_Click()}
-            disabled={!currentUser.loggedIn || !multiDeleteEnabled} // Enable or disable the multi-delete button
+            disabled={!currentUser.loggedIn || !multiDeleteEnabled}
           >
             <DeleteIcon />
           </Fab>
+          {loading && (
+            <div className='spinner'>
+              <CircularProgress /> {/* Render CircularProgress component */}
+            </div>
+          )}
         </Box>
         <section className='contents'>
           <h1>TODO List</h1>
@@ -214,6 +223,8 @@ const TodoShow = () => {
                   handle_Delete={handle_Delete}
                   selectedItems={selectedItems}
                   setSelectedItems={setSelectedItems}
+                  updateFlag={updateFlag}
+                  setUpdateFlag={setUpdateFlag}
                   handle_Checkbox_Change={handle_Checkbox_Change}
                 />
               ))}
@@ -231,6 +242,8 @@ const TodoCard = ({
   selectedItems,
   setSelectedItems,
   handle_Checkbox_Change,
+  updateFlag,
+  setUpdateFlag,
 }) => {
   const { _id, title, description, user } = data;
   const [openDialog, setOpenDialog] = useState(false);
@@ -241,7 +254,19 @@ const TodoCard = ({
     setOpenDialog(true);
   };
 
-  const handleConfirmDelete = (e) => {
+  const handle_Update = () => {
+    dispatch(
+      set({
+        _id: _id,
+        title: title,
+        description: description,
+        user: user,
+      }),
+    );
+    navigate(`/todoUpdate/`);
+  };
+
+  const handle_DeleteConfirm = (e) => {
     handle_Delete(e);
     setOpenDialog(false);
   };
@@ -250,42 +275,29 @@ const TodoCard = ({
     setOpenDialog(false); // Close the dialog if cancel is clicked
   };
 
-  const handleRowClick = () => {
+  const handle_TableRow_Click = () => {
     setSelectedItems((prevSelectedItems) => ({
       ...prevSelectedItems,
       [_id]: !prevSelectedItems[_id], // Toggle the checkbox status
     }));
-    // setUpdateFlag(!updateFlag);
+    setUpdateFlag(!updateFlag);
   };
 
   return (
     <>
       <TableRow
         key={_id}
-        onClick={handleRowClick}
+        onClick={handle_TableRow_Click}
         style={{ cursor: "pointer" }}
       >
         <TableCell>
-          {/* <ButtonBase onClick={handleRowClick}> */}
-          {/* Content of the TableRow */}
           <h3>{title}</h3>
-          {/* </ButtonBase> */}
         </TableCell>
         <TableCell>{description}</TableCell>
         <TableCell>
           <IconButton
             // onClick={handleEdit}
-            onClick={() => {
-              dispatch(
-                set({
-                  _id: _id,
-                  title: title,
-                  description: description,
-                  user: user,
-                }),
-              );
-              navigate(`/todoUpdate/`);
-            }}
+            onClick={handle_Update}
             aria-label='edit'
             style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)" }}
           >
@@ -303,7 +315,7 @@ const TodoCard = ({
         <TableCell>
           <Checkbox
             checked={selectedItems[_id] || false}
-            onChange={handle_Checkbox_Change[_id]}
+            onChange={handle_Checkbox_Change}
             color='primary'
             name={_id}
           />
@@ -332,7 +344,7 @@ const TodoCard = ({
           </Button>
           <Button
             name={_id}
-            onClick={handleConfirmDelete}
+            onClick={handle_DeleteConfirm}
             color='secondary'
             variant='contained'
             autoFocus

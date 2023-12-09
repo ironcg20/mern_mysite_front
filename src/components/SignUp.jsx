@@ -11,11 +11,14 @@ import IconButton from "@material-ui/core/IconButton";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import { useDispatch, useSelector } from "react-redux";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import {
   handleLogIn,
   handleSignUp,
   handleLogOut,
 } from "../reducers/userReducer"; // Import actions from slice
+import { circularProgressClasses } from "@mui/material";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,19 +45,55 @@ const SignUp = ({ handleLoginSuccess }) => {
   const classes = useStyles();
   const [data, setData] = useState({ email: "", password: "" });
   const [error, setError] = useState({ email: "", password: "" });
-  const navigate = useNavigate();
-  const dispatch = useDispatch(); // Getting dispatch function
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch(); // Getting dispatch function
 
   function handleChange(e) {
     setData((data) => ({ ...data, [e.target.name]: e.target.value }));
     setError({ ...error, [e.target.name]: "" }); // Clear error message on input change
   }
 
+  const handleSignIn = () => {
+    setLoading(true);
+
+    dispatch(
+      handleLogIn({
+        email: data.email,
+        password: data.password,
+      }),
+    )
+      .then(() => {
+        navigate("/todoView");
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          setError({ ...error, email: "User Not Found!" });
+        } else if (error.response && error.response.status === 401) {
+          setError({ ...error, password: "Incorrect password!" });
+        } else if (error.response && error.response.status === 500) {
+          setError({ ...error, email: "Error finding user" });
+        } else {
+          setError({
+            ...error,
+            email: "Unknown Error!",
+            password: "Unknown Error!",
+          });
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   function handleSubmit(e) {
+    setLoading(true);
     e.preventDefault();
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -75,14 +114,20 @@ const SignUp = ({ handleLoginSuccess }) => {
 
     dispatch(handleSignUp({ email: data.email, password: data.password }))
       .then(() => {
+        dispatch(handleLogIn({ email: data.email, password: data.password }));
         navigate("/todoView");
       })
       .catch((error) => {
+        // setLoading(true);
         if (error.response && error.response.status === 400) {
           setError({ ...error, email: "Email exist already!" });
         } else {
           setError({ ...error, email: error.message });
         }
+        // setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
@@ -144,7 +189,13 @@ const SignUp = ({ handleLoginSuccess }) => {
             type='submit'
             disabled={!isSignUpEnabled}
           >
-            Sign Up
+            {loading ? (
+              <CircularProgress
+                style={{ color: "white", width: "20px", height: "20px" }}
+              />
+            ) : (
+              " Sign Up"
+            )}
           </Button>
         </form>
       </Paper>

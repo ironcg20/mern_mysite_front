@@ -68,7 +68,7 @@ export const handleSignUp = (_data) => async (dispatch) => {
     .post("http://localhost:8000/api/user/create", _data)
     .then((res) => {
       dispatch(setMessage(res.data.message));
-      dispatch(handleLogIn({ email: _data.email, password: _data.password }));
+      // dispatch(handleLogIn({ email: _data.email, password: _data.password }));
     })
     .catch((err) => {
       dispatch(setMessage(err.message));
