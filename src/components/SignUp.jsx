@@ -99,7 +99,7 @@ const SignUp = ({ handleLoginSuccess }) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(data.email)) {
       setError({ ...error, email: "Invalid email address" }); // Set error message for email validation failure
-      return;
+      // return;
     }
 
     // Password validation: Minimum 8 characters, at least one letter, one number, and one special character
@@ -127,6 +127,7 @@ const SignUp = ({ handleLoginSuccess }) => {
         // setLoading(false);
       })
       .finally(() => {
+        console.log("Load ended!");
         setLoading(false);
       });
   }
