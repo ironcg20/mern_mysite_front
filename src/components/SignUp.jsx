@@ -99,6 +99,8 @@ const SignUp = ({ handleLoginSuccess }) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(data.email)) {
       setError({ ...error, email: "Invalid email address" }); // Set error message for email validation failure
+      setLoading(false);
+      return;
       // return;
     }
 
