@@ -7,6 +7,9 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
+
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const persistor = persistStore(store);
 // import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -14,6 +17,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <App />
+    <ToastContainer />
   </Provider>,
   document.getElementById("root"),
 );

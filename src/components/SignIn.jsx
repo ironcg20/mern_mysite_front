@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { setTabIndex } from "../reducers/siteReducer";
 import "../index.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,8 +40,12 @@ const SignIn = ({ handleLoginSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({ email: "", password: "" });
   const isSignInEnabled = data.email !== "" && data.password !== "";
+  // const notify = (notify_text) => toast.success(notify_text);
+  // const user = useSelector((state) => state.user);
   // const site = useSelector((state) => state.site);
 
+  // const notify = () => toast.success("Notification message!");
+  //
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -60,6 +66,7 @@ const SignIn = ({ handleLoginSuccess }) => {
     )
       .then(() => {
         dispatch(setTabIndex({ tabIndex: 1 }));
+        toast.success("Login Successful!");
         navigate("/todoView");
       })
       .catch((error) => {
