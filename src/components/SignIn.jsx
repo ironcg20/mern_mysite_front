@@ -8,6 +8,7 @@ import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import { handleLogIn } from "../reducers/userReducer"; // Import actions from slice
 import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { setTabIndex } from "../reducers/siteReducer";
 import "../index.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +38,7 @@ const SignIn = ({ handleLoginSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({ email: "", password: "" });
   const isSignInEnabled = data.email !== "" && data.password !== "";
+  // const site = useSelector((state) => state.site);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -58,6 +60,7 @@ const SignIn = ({ handleLoginSuccess }) => {
       }),
     )
       .then(() => {
+        dispatch(setTabIndex({ tabIndex: 1 }));
         navigate("/todoView");
       })
       .catch((error) => {

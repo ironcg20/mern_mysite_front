@@ -1,57 +1,68 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import SignIn from "./SignIn";
-import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import { Container } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { CssBaseline } from "@mui/material"; // Optional: For resetting default styles
-import { Tabs, Tab, Box } from "@mui/material";
-import axios from "axios";
+import { Tabs, Tab } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import store from "../app/store"; // Import the store
 import { Grid } from "@material-ui/core";
-// import { useNavigate } from "react-router-dom";
-// import { _handleLogIn } from "";
-import {
-  handleLogIn,
-  handleSignUp,
-  handleLogOut,
-} from "../reducers/userReducer"; // Import actions from slice
+import { handleLogOut } from "../reducers/userReducer";
+import { setTabIndex } from "../reducers/siteReducer";
 
 const NavBar = () => {
   const user = useSelector((state) => state.user);
-  const dispatch = useDispatch(); // Getting dispatch function
+  const site = useSelector((state) => state.site);
+  // const tabIndex = site.tabIndex;
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const _loginData = { email: "111", password: "111" };
-  // const _signUpData = { email: "dddad", password: "111" };
+  const [refresh, setRefresh] = useState(false);
 
-  const [value, setValue] = useState(0);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-    switch (newValue) {
+  // const [tabIndex, setTabIndex] = useState();
+
+  // switch (site.tabIndex) {
+  //   case 0:
+  //     console.log("Home Reach");
+  //     navigate("/home");
+  //     break;
+  //   case 1:
+  //     navigate("/todoView");
+  //     break;
+  //   case 2:
+  //     navigate("/aboutUs");
+  //     break;
+  //   default:
+  //     break;
+  // }
+
+  // React.useEffect(() => {
+  //   setRefresh(!refresh);
+  // });
+  useEffect(() => {
+    switch (site.tabIndex) {
       case 0:
-        navigate("/home"); // Define your route paths accordingly
+        console.log("Home Reach");
+        navigate("/home");
         break;
       case 1:
-        navigate("/todoView"); // Define your route paths accordingly
+        navigate("/todoView");
         break;
       case 2:
         navigate("/aboutUs");
         break;
-      // Add more cases for additional tabs
       default:
         break;
     }
+    setRefresh(false);
+  }, [refresh]);
+
+  const handleChange = (event, _tabIndex) => {
+    dispatch(setTabIndex({ tabIndex: _tabIndex }));
+    setRefresh(true);
   };
 
   return (
@@ -64,17 +75,17 @@ const NavBar = () => {
         }}
       >
         <Toolbar>
-          {/* <h1>ddd</h1> */}
           <IconButton edge='start' color='primary' aria-label='Menu'>
             <MenuIcon />
           </IconButton>
 
           <Tabs
-            value={value}
+            value={site.tabIndex}
             onChange={handleChange}
             aria-label='basic tabs example'
             variant='scrollable'
             style={{
+              // backgroundColor: "red",
               flex: 1,
               display: "flex",
               justifyContent: "center",
@@ -82,11 +93,26 @@ const NavBar = () => {
               marginLeft: "30rem",
             }}
           >
-            <Tab label='Home' style={{ color: "black" }} />
-            <Tab label='Todo View' style={{ color: "black" }} />
-            <Tab label='About Us' />
-            <Tab label='Our Services' />
-            <Tab label='Contact Us' />
+            <Tab
+              label='Home'
+              style={{ color: site.tabIndex == 0 ? "black" : "" }}
+            />
+            <Tab
+              label='Todo View'
+              style={{ color: site.tabIndex == 1 ? "black" : "" }}
+            />
+            <Tab
+              label='About Us'
+              style={{ color: site.tabIndex == 2 ? "black" : "" }}
+            />
+            <Tab
+              label='Our Services'
+              style={{ color: site.tabIndex == 3 ? "black" : "" }}
+            />
+            <Tab
+              label='Contact Us'
+              style={{ color: site.tabIndex == 4 ? "black" : "" }}
+            />
           </Tabs>
 
           <Grid container alignItems='center' justify='flex-end'>
@@ -141,6 +167,7 @@ const NavBar = () => {
             )}
           </Grid>
         </Toolbar>
+        {/* {setRefresh(!refresh)} */}
       </AppBar>
     </>
   );
