@@ -22,26 +22,6 @@ const NavBar = () => {
 
   const [refresh, setRefresh] = useState(false);
 
-  // const [tabIndex, setTabIndex] = useState();
-
-  // switch (site.tabIndex) {
-  //   case 0:
-  //     console.log("Home Reach");
-  //     navigate("/home");
-  //     break;
-  //   case 1:
-  //     navigate("/todoView");
-  //     break;
-  //   case 2:
-  //     navigate("/aboutUs");
-  //     break;
-  //   default:
-  //     break;
-  // }
-
-  // React.useEffect(() => {
-  //   setRefresh(!refresh);
-  // });
   useEffect(() => {
     switch (site.tabIndex) {
       case 0:
@@ -53,6 +33,12 @@ const NavBar = () => {
         break;
       case 2:
         navigate("/aboutUs");
+        break;
+      case 3:
+        navigate("/services");
+        break;
+      case 4:
+        navigate("/contacts");
         break;
       default:
         break;

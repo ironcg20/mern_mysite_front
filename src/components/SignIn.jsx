@@ -51,7 +51,6 @@ const SignIn = ({ handleLoginSuccess }) => {
   const handleSubmit = (e) => {
     setLoading(true);
     e.preventDefault(); // Prevent default form submission
-    var flag_logIn = false;
 
     dispatch(
       handleLogIn({
@@ -98,8 +97,8 @@ const SignIn = ({ handleLoginSuccess }) => {
             value={data.email}
             onChange={handleChange}
             name='email'
-            error={!!error.email} // Set error state for TextField
-            helperText={error.email} // Display error message if present
+            error={!!error.email}
+            helperText={error.email}
           />
           <TextField
             className={classes.textField}

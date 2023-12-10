@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   errorContainer: {
@@ -11,13 +12,14 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
-    height: "80vh", // Adjusted height for better visibility
-    gap: theme.spacing(3), // Spacing between elements
+    height: "80vh",
+    gap: theme.spacing(3),
   },
 }));
 
 const NotFoundPage = () => {
   const classes = useStyles();
+  const currentUser = useSelector((state) => state.user);
 
   return (
     <div className={classes.errorContainer}>
@@ -27,7 +29,7 @@ const NotFoundPage = () => {
         The page you are looking for might have been removed, had its name
         changed, or is temporarily unavailable.
       </Typography>
-      <Button component={Link} to='/' variant='contained' color='primary'>
+      <Button component={Link} to='/home' variant='contained' color='primary'>
         Go to Home
       </Button>
     </div>
